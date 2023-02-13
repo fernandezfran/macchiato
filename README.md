@@ -1,3 +1,3 @@
 # macchiato
 
-Simple first-neighbor model to clusters.
+Simple first-neighbor model to atom clusters.

@@ -1,6 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# This file is part of macchiato
+#   https://github.com/fernandezfran/macchiato/
+# Copyright (c) 2023, Francisco Fernandez
+# License: MIT
+#   https://github.com/fernandezfran/macchiato/blob/master/LICENSE
+
+# ============================================================================
+# DOCS
+# ============================================================================
+
+"""FirstNeighbor base class."""
+
+# ============================================================================
+# IMPORTS
+# ============================================================================
+
 import exma
 
 import numpy as np
@@ -8,8 +24,44 @@ import numpy as np
 import sklearn.cluster
 from sklearn.base import BaseEstimator, ClusterMixin
 
+# ============================================================================
+# CLASSES
+# ============================================================================
+
 
 class FirstNeighbors(ClusterMixin, BaseEstimator):
+    """First Neighbors Clustering.
+
+    Parameters
+    ----------
+    trajectory : `exma.core.AtomicSystem`
+        a molecular dynamics trajectory with the box defined
+
+    atom_type : str or int
+        type of atom on which to analyze the proximity to the clusters
+
+    cluster_type : str or int
+        type of atom forming the clusters
+
+    rcut_atom : float
+        cutoff radius of first-neighbor of atoms `atom_type` to `cluster_type`
+        ones
+
+    rcut_cluster : float
+        cutoff radius to consider a cluster of `cluter_type` atoms
+
+    Attributes
+    ----------
+    bonded_ : float
+        the percentage of bonded cluters of `cluster_type` atoms
+
+    isolated_ : float
+        the percentage of isolated `cluster_type` atoms
+
+    contributions_ : np.array
+        the contribution of the `atom_type` atoms
+    """
+
     def __init__(
         self, trajectory, atom_type, cluster_type, rcut_atom, rcut_cluster
     ):
@@ -33,6 +85,7 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
         self.contributions_ = np.zeros(self._n_atom_type)
 
     def _isolated_or_bonded(self, snapshot):
+        """Isolated/bonded `cluster_type` atoms per snapshot."""
         distance_matrix = exma.distances.pbc_distances(
             snapshot,
             snapshot,
@@ -53,9 +106,26 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
         return db.labels_
 
     def _mean_contribution(self, snapshot, labels):
+        """Mean contribution of the `atom_type` atoms."""
         raise NotImplementedError
 
     def fit(self, X, y=None, sample_weight=None):
+        """Fit method.
+
+        Parameters
+        ----------
+        X : ignored
+            not used here, just convention, it uses the snapshots in the
+            trajectory
+
+        y : ignored
+            not used, just convention
+
+        Returns
+        -------
+        self : object
+            fitted model
+        """
         for snapshot in self.trajectory:
             self._mean_contribution(
                 snapshot, self._isolated_or_bonded(snapshot)
@@ -69,5 +139,21 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
         return self
 
     def fit_predict(self, X, y=None, sample_weight=None):
+        """Compute the clustering and predict the contributions.
+
+        Parameters
+        ----------
+        X : ignored
+            not used here, just convention, it uses the snapshots in the
+            trajectory
+
+        y : ignored
+            not used, just convention
+
+        Returns
+        -------
+        contributions_ : np.array
+            the contribution of the `atom_type` atoms
+        """
         self.fit(X)
         return self.contributions_
