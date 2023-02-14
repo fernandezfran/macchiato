@@ -4,6 +4,7 @@ include pyproject.toml
 
 recursive-include macchiato *.py
 
+exclude requirements_dev.txt
 exclude tox.ini
 
 recursive-exclude docs *
