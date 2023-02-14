@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""FirstNeighbor base class."""
+"""FirstNeighbors base class."""
 
 # ============================================================================
 # IMPORTS
@@ -34,7 +34,7 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
 
     Parameters
     ----------
-    trajectory : `exma.core.AtomicSystem`
+    trajectory : `exma.core.AtomicSystem` iterable
         a molecular dynamics trajectory with the box defined
 
     atom_type : str or int

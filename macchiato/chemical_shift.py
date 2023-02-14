@@ -33,7 +33,7 @@ class ChemicalShiftSpectra(FirstNeighbors):
 
     Parameters
     ----------
-    trajectory : `exma.core.AtomicSystem`
+    trajectory : `exma.core.AtomicSystem` iterable
         a molecular dynamics trajectory with the box defined
 
     atom_type : str or int
