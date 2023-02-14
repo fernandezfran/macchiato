@@ -26,6 +26,11 @@ import pytest
     ("structure"),
     [
         ("Li13Si64"),
+        ("Li36Si64"),
+        ("Li57Si64"),
+        ("Li128Si64"),
+        ("Li210Si64"),
+        ("Li240Si64"),
     ],
 )
 def test_fit(structure, request):
@@ -51,6 +56,11 @@ def test_fit(structure, request):
     ("structure"),
     [
         ("Li13Si64"),
+        ("Li36Si64"),
+        ("Li57Si64"),
+        ("Li128Si64"),
+        ("Li210Si64"),
+        ("Li240Si64"),
     ],
 )
 def test_fit_predict(structure, request):
