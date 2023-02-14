@@ -6,4 +6,5 @@ recursive-include macchiato *.py
 
 exclude tox.ini
 
+recursive-exclude docs *
 recursive-exclude tests *

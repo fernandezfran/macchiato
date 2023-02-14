@@ -1,0 +1,7 @@
+Sphinx
+sphinx-rtd-theme
+
+nbsphinx
+
+ipykernel
+ipython>=8.8.0
