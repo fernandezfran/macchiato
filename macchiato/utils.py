@@ -26,7 +26,7 @@ import scipy.special
 # ============================================================================
 
 
-def voigt(x, mean, sigma, gamma, heigth=1.0):
+def voigt_peak(x, mean, sigma, gamma, heigth=1.0):
     """Voigt profile.
 
     Parameters
@@ -43,8 +43,8 @@ def voigt(x, mean, sigma, gamma, heigth=1.0):
     gamma : float
         the half-width at half-maximum of the lorentzian component
 
-    height : float, default=1.0
-        optional height of the peak
+    heigth : float, default=1.0
+        optional heigth of the peak
 
     Returns
     -------

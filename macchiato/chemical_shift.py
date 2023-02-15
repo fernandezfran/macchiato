@@ -22,7 +22,12 @@ import exma
 
 import numpy as np
 
+import scipy.optimize
+
+from sklearn.base import RegressorMixin
+
 from .base import FirstNeighbors
+from .utils import voigt_peak
 
 # ============================================================================
 # CLASSES
@@ -62,7 +67,7 @@ class ChemicalShiftCenters(FirstNeighbors):
     isolated_ : float
         the percentage of isolated `cluster_type` atoms
 
-    contributions_ : np.array
+    contributions_ : numpy.ndarray
         the mean of the peak in the chemical shift spectra per atom of the
         `atom_type` type
     """
@@ -130,7 +135,98 @@ class ChemicalShiftCenters(FirstNeighbors):
 
         Returns
         -------
-        contributions_ : np.array
+        contributions_ : numpy.ndarray
             the chemical shift center per atom of the `atom_type` atoms
         """
         return super().fit_predict(X, y, sample_weight)
+
+
+class ChemicalShiftWidth(RegressorMixin):
+    """Fit the overall widht of a chemical shift spectra given the centers.
+
+    Parameters
+    ----------
+    csc : `macchiato.chemical_shift.ChemicalShiftCenters` or numpy.ndarray
+        a ChemicalShiftCenters object already fitted or a numpy array with the
+        centers
+
+    Attributes
+    ----------
+    sigma_ : float
+        the fitted standard deviation of the gaussian component of each voigt
+        peak
+    gamma_ : float
+        the fitted half-width at half-maximum of the lorentzian component of
+        each voigt peak
+    heigth_ : float
+        the fitted heigth of each voigt peak
+    """
+
+    def __init__(self, csc):
+        if isinstance(csc, np.ndarray):
+            self.csc = csc
+        else:
+            self.csc = csc.contributions_
+
+    def _nmr_profile(self, X, sigma, gamma, heigth):
+        """NMR profile with a contribution per center."""
+        return np.mean(
+            [
+                voigt_peak(X, mean, sigma, gamma, heigth=heigth)
+                for mean in self.csc
+            ],
+            axis=0,
+        ).ravel()
+
+    def fit(self, X, y):
+        """Fit the width of the nmr profile to the experimental data.
+
+        X : array-like of shape (n_ppm, 1)
+            chemical shift ppm points
+
+        y : array-like of shape (n_ppm,)
+            target intensity
+
+        Returns
+        -------
+        self : object
+            fitted widths
+        """
+        self._popt, _ = scipy.optimize.curve_fit(self._nmr_profile, X, y)
+
+        self.sigma_, self.gamma_, self.heigth_ = self._popt
+
+        return self
+
+    def predict(self, X):
+        """Predict the chemical shift spectra.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_ppm, 1)
+            chemical shift ppm points
+
+        Returns
+        -------
+        y : array-like of shape (n_ppm,)
+            predicted intensity
+        """
+        return self._nmr_profile(X, *self._popt)
+
+    def score(self, X, y):
+        """Return the coefficient of determination of the prediction.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_ppm, 1)
+            chemical shift ppm points
+
+        y : array-like of shape (n_ppm,)
+            true intensity
+
+        Returns
+        -------
+        score : float
+            :math:`R^2` of ``self.predict(X)`` wrt. `y`.
+        """
+        return super(ChemicalShiftWidth, self).score(X, y)

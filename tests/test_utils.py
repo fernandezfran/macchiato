@@ -11,7 +11,7 @@
 # IMPORTS
 # ============================================================================
 
-from macchiato.peak import voigt
+from macchiato.utils import voigt_peak
 
 import numpy as np
 
@@ -20,7 +20,7 @@ import numpy as np
 # =============================================================================
 
 
-def test_voigt():
+def test_voigt_peak():
     """Test the voigt profile peak."""
     ref = np.array(
         [
@@ -37,6 +37,6 @@ def test_voigt():
     )
 
     x = np.arange(-1, 1.01, 0.25)
-    y = voigt(x, 0, 0.01, 0.01)
+    y = voigt_peak(x, 0, 0.01, 0.01)
 
     np.testing.assert_array_almost_equal(y, ref, 5)

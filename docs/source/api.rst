@@ -9,14 +9,6 @@ Module contents
 modules
 -------
 
-macchiato.base module
----------------------
-
-.. automodule:: macchiato.base
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 macchiato.chemical\_shift module
 --------------------------------
 
@@ -25,10 +17,18 @@ macchiato.chemical\_shift module
    :undoc-members:
    :show-inheritance:
 
-macchiato.peak module
+macchiato.utils module
+----------------------
+
+.. automodule:: macchiato.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+macchiato.base module
 ---------------------
 
-.. automodule:: macchiato.peak
+.. automodule:: macchiato.base
    :members:
    :undoc-members:
    :show-inheritance:
