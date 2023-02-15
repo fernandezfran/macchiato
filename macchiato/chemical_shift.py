@@ -163,10 +163,7 @@ class ChemicalShiftWidth(RegressorMixin):
     """
 
     def __init__(self, csc):
-        if isinstance(csc, np.ndarray):
-            self.csc = csc
-        else:
-            self.csc = csc.contributions_
+        self.csc = csc if isinstance(csc, np.ndarray) else csc.contributions_
 
     def _nmr_profile(self, X, sigma, gamma, heigth):
         """NMR profile with a contribution per center."""

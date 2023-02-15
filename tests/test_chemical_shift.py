@@ -11,7 +11,7 @@
 # IMPORTS
 # ============================================================================
 
-from macchiato.chemical_shift import ChemicalShiftCenters
+from macchiato.chemical_shift import ChemicalShiftCenters, ChemicalShiftWidth
 
 import numpy as np
 
@@ -24,14 +24,7 @@ import pytest
 
 @pytest.mark.parametrize(
     ("structure"),
-    [
-        ("Li13Si64"),
-        ("Li36Si64"),
-        ("Li57Si64"),
-        ("Li128Si64"),
-        ("Li210Si64"),
-        ("Li240Si64"),
-    ],
+    [("Li12Si7"), ("Li13Si4"), ("Li15Si4")],
 )
 class TestChemicalShiftCenters:
     """Test the ChemicalShiftCenters fitting."""
@@ -74,3 +67,44 @@ class TestChemicalShiftCenters:
         np.testing.assert_array_almost_equal(
             contributions, structure["contributions"]
         )
+
+
+@pytest.mark.parametrize(
+    ("structure"),
+    [("Li12Si7"), ("Li13Si4"), ("Li15Si4")],
+)
+class TestChemicalShiftWidth:
+    """Test the ChemicalShiftWidth fitting."""
+
+    def test_fit(self, structure, request):
+        """Test the fit attributes of the ChemicalShiftWidth."""
+        structure = request.getfixturevalue(structure)
+
+        csw = ChemicalShiftWidth(structure["contributions"])
+        csw.fit(structure["ppm"], structure["intensity"])
+
+        np.testing.assert_array_almost_equal(csw.sigma_, structure["sigma"])
+        np.testing.assert_array_almost_equal(csw.gamma_, structure["gamma"])
+        np.testing.assert_array_almost_equal(csw.heigth_, structure["heigth"])
+
+    def test_predict(self, structure, request):
+        """Test the fit attributes of the ChemicalShiftWidth."""
+        structure = request.getfixturevalue(structure)
+
+        csw = ChemicalShiftWidth(structure["contributions"])
+        csw._popt = [structure["sigma"], structure["gamma"], structure["heigth"]]
+
+        ypred = csw.predict(structure["ppm"])
+
+        np.testing.assert_array_almost_equal(ypred, structure["ypred"])
+
+    def test_predict(self, structure, request):
+        """Test the fit attributes of the ChemicalShiftWidth."""
+        structure = request.getfixturevalue(structure)
+
+        csw = ChemicalShiftWidth(structure["contributions"])
+        csw._popt = [structure["sigma"], structure["gamma"], structure["heigth"]]
+
+        score = csw.score(structure["ppm"], structure["intensity"])
+
+        np.testing.assert_array_almost_equal(score, structure["score"])

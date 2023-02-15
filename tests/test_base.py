@@ -20,9 +20,9 @@ import pytest
 # =============================================================================
 
 
-def test_base_raise(Li13Si64):
+def test_base_raise(Li12Si7):
     """Test the NotImplementedError."""
     with pytest.raises(NotImplementedError):
         FirstNeighbors(
-            Li13Si64["trajectory"], "Li", "Si", None, None
+            Li12Si7["trajectory"], "Li", "Si", None, None
         )._mean_contribution(None, None)
