@@ -11,7 +11,7 @@
 # IMPORTS
 # ============================================================================
 
-from macchiato.chemical_shift import ChemicalShiftSpectra
+from macchiato.chemical_shift import ChemicalShiftCenters
 
 import numpy as np
 
@@ -33,14 +33,14 @@ import pytest
         ("Li240Si64"),
     ],
 )
-class TestChemicalShiftSpectra:
-    """Test the ChemicalShiftSpectra fitting."""
+class TestChemicalShiftCenters:
+    """Test the ChemicalShiftCenters fitting."""
 
     def test_fit(self, structure, request):
-        """Test the fit attributes of the ChemicalShiftSpectra."""
+        """Test the fit attributes of the ChemicalShiftCenters."""
         structure = request.getfixturevalue(structure)
 
-        css = ChemicalShiftSpectra(
+        css = ChemicalShiftCenters(
             structure["trajectory"],
             "Li",
             "Si",
@@ -57,10 +57,10 @@ class TestChemicalShiftSpectra:
         )
 
     def test_fit_predict(self, structure, request):
-        """Test the fit_predict of the ChemicalShiftSpectra."""
+        """Test the fit_predict of the ChemicalShiftCenters."""
         structure = request.getfixturevalue(structure)
 
-        css = ChemicalShiftSpectra(
+        css = ChemicalShiftCenters(
             structure["trajectory"],
             "Li",
             "Si",

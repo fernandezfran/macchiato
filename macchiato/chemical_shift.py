@@ -11,7 +11,8 @@
 # DOCS
 # ============================================================================
 
-"""ChemicalShiftSpectra class."""
+"""Estimate the peak centers of each atom and the overall width of the \
+chemical shift spectra."""
 
 # ============================================================================
 # IMPORTS
@@ -28,8 +29,8 @@ from .base import FirstNeighbors
 # ============================================================================
 
 
-class ChemicalShiftSpectra(FirstNeighbors):
-    """Chemical Shift Spectra.
+class ChemicalShiftCenters(FirstNeighbors):
+    """Obtain the peak centers of each atom `atom_type` in a trajectory.
 
     Parameters
     ----------

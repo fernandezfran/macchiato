@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""Simple first-neighbor model to atom clusters."""
+"""Simple first-neighbor model to atom cluster types."""
 
 # ============================================================================
 # IMPORTS
@@ -19,14 +19,14 @@
 
 import importlib_metadata
 
-from .chemical_shift import ChemicalShiftSpectra
+from .chemical_shift import ChemicalShiftCenters
 from .peak import voigt
 
 # ============================================================================
 # CONSTANTS
 # ============================================================================
 
-__all__ = ["ChemicalShiftSpectra", "voigt"]
+__all__ = ["ChemicalShiftCenters", "voigt"]
 
 NAME = "macchiato"
 
