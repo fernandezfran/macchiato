@@ -88,22 +88,30 @@ class TestChemicalShiftWidth:
         np.testing.assert_array_almost_equal(csw.heigth_, structure["heigth"])
 
     def test_predict(self, structure, request):
-        """Test the fit attributes of the ChemicalShiftWidth."""
+        """Test the ChemicalShiftWidth predict."""
         structure = request.getfixturevalue(structure)
 
         csw = ChemicalShiftWidth(structure["contributions"])
-        csw._popt = [structure["sigma"], structure["gamma"], structure["heigth"]]
+        csw._popt = [
+            structure["sigma"],
+            structure["gamma"],
+            structure["heigth"],
+        ]
 
         ypred = csw.predict(structure["ppm"])
 
         np.testing.assert_array_almost_equal(ypred, structure["ypred"])
 
-    def test_predict(self, structure, request):
-        """Test the fit attributes of the ChemicalShiftWidth."""
+    def test_score(self, structure, request):
+        """Test the score of the ChemicalShiftWidth."""
         structure = request.getfixturevalue(structure)
 
         csw = ChemicalShiftWidth(structure["contributions"])
-        csw._popt = [structure["sigma"], structure["gamma"], structure["heigth"]]
+        csw._popt = [
+            structure["sigma"],
+            structure["gamma"],
+            structure["heigth"],
+        ]
 
         score = csw.score(structure["ppm"], structure["intensity"])
 
