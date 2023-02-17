@@ -19,13 +19,21 @@
 
 import importlib_metadata
 
-from .chemical_shift import ChemicalShiftCenters, ChemicalShiftWidth
+from .chemical_shift import (
+    ChemicalShiftCenters,
+    ChemicalShiftSpectra,
+    ChemicalShiftWidth,
+)
 
 # ============================================================================
 # CONSTANTS
 # ============================================================================
 
-__all__ = ["ChemicalShiftCenters", "ChemicalShiftWidth"]
+__all__ = [
+    "ChemicalShiftCenters",
+    "ChemicalShiftWidth",
+    "ChemicalShiftSpectra",
+]
 
 NAME = "macchiato"
 

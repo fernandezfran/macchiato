@@ -16,6 +16,16 @@ macchiato.chemical\_shift module
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource
+
+macchiato.plot module
+---------------------
+
+.. automodule:: macchiato.plot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :member-order: bysource
 
 macchiato.utils module
 ----------------------
@@ -24,6 +34,7 @@ macchiato.utils module
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource
 
 macchiato.base module
 ---------------------
@@ -32,3 +43,4 @@ macchiato.base module
    :members:
    :undoc-members:
    :show-inheritance:
+   :member-order: bysource

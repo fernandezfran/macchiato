@@ -27,6 +27,7 @@ import scipy.optimize
 from sklearn.base import RegressorMixin
 
 from .base import FirstNeighbors
+from .plot import CSPlotter
 from .utils import voigt_peak
 
 # ============================================================================
@@ -146,7 +147,7 @@ class ChemicalShiftWidth(RegressorMixin):
 
     Parameters
     ----------
-    csc : `macchiato.chemical_shift.ChemicalShiftCenters` or numpy.ndarray
+    csc : macchiato.chemical_shift.ChemicalShiftCenters or numpy.ndarray
         a ChemicalShiftCenters object already fitted or a numpy array with the
         centers
 
@@ -227,3 +228,33 @@ class ChemicalShiftWidth(RegressorMixin):
             :math:`R^2` of ``self.predict(X)`` wrt. `y`.
         """
         return super(ChemicalShiftWidth, self).score(X, y)
+
+
+class ChemicalShiftSpectra:
+    """Plot the chemical shift spectra once you have the centers and width.
+
+    Parameters
+    ----------
+    csc : macchiato.chemical_shift.ChemicalShiftCenters or numpy.ndarray
+        a ChemicalShiftCenters object already fitted or a numpy array with the
+        centers
+
+    csw : macchiato.chemical_shift.ChemicalShiftWidth or numpy.ndarray
+        a ChemicalShiftWidth object already fitted or numpy.ndarray with
+        sigma, gamma and heigth params of the voigt peak
+    """
+
+    def __init__(self, csc, csw):
+        self.centers = (
+            csc if isinstance(csc, np.ndarray) else csc.contributions_
+        )
+        self.voigt_params = (
+            csw
+            if isinstance(csc, np.ndarray)
+            else np.array([csw.sigma_, csw.gamma_, csw.heigth_])
+        )
+
+    @property
+    def plot(self):
+        """Plot accesor to macchiato.plot.CSPlotter."""
+        return CSPlotter(self)

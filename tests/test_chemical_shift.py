@@ -33,7 +33,7 @@ class TestChemicalShiftCenters:
         """Test the fit attributes of the ChemicalShiftCenters."""
         structure = request.getfixturevalue(structure)
 
-        css = ChemicalShiftCenters(
+        csc = ChemicalShiftCenters(
             structure["trajectory"],
             "Li",
             "Si",
@@ -42,18 +42,18 @@ class TestChemicalShiftCenters:
             {"bonded": 18.0, "isolated": 6.0},
         )
 
-        css.fit(None)
+        csc.fit(None)
 
-        np.testing.assert_array_almost_equal(css.bonded_, structure["bonded"])
+        np.testing.assert_array_almost_equal(csc.bonded_, structure["bonded"])
         np.testing.assert_array_almost_equal(
-            css.isolated_, structure["isolated"]
+            csc.isolated_, structure["isolated"]
         )
 
     def test_fit_predict(self, structure, request):
         """Test the fit_predict of the ChemicalShiftCenters."""
         structure = request.getfixturevalue(structure)
 
-        css = ChemicalShiftCenters(
+        csc = ChemicalShiftCenters(
             structure["trajectory"],
             "Li",
             "Si",
@@ -62,7 +62,7 @@ class TestChemicalShiftCenters:
             {"bonded": 18.0, "isolated": 6.0},
         )
 
-        contributions = css.fit_predict(None)
+        contributions = csc.fit_predict(None)
 
         np.testing.assert_array_almost_equal(
             contributions, structure["contributions"]

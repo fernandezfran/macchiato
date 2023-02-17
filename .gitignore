@@ -3,3 +3,4 @@
 __pycache__/
 .coverage
 build/
+result_images/
