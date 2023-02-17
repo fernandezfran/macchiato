@@ -28,7 +28,7 @@ from .utils import voigt_peak
 # ============================================================================
 
 
-class CSPlotter:
+class SpectraPlotter:
     """Chemical shift plotter.
 
     Kind of plots to produce:
@@ -45,7 +45,7 @@ class CSPlotter:
     def __init__(self, css):
         self.css = css
 
-    def spectra(self, X, ax=None, **kwargs):
+    def predicted(self, X, ax=None, **kwargs):
         """Plot the predicted spectra.
 
         Parameters
@@ -123,6 +123,6 @@ class CSPlotter:
 
         ax.scatter(X, y, **true_kws)
 
-        self.spectra(X, ax=ax, **pred_kws)
+        self.predicted(X, ax=ax, **pred_kws)
 
         return ax

@@ -9,8 +9,8 @@ Module contents
 modules
 -------
 
-macchiato.chemical\_shift module
---------------------------------
+macchiato.chemical\_shift
+-------------------------
 
 .. automodule:: macchiato.chemical_shift
    :members:
@@ -18,8 +18,10 @@ macchiato.chemical\_shift module
    :show-inheritance:
    :member-order: bysource
 
-macchiato.plot module
----------------------
+.. _macchiato.plot:
+
+macchiato.plot
+--------------
 
 .. automodule:: macchiato.plot
    :members:
@@ -27,8 +29,8 @@ macchiato.plot module
    :show-inheritance:
    :member-order: bysource
 
-macchiato.utils module
-----------------------
+macchiato.utils
+---------------
 
 .. automodule:: macchiato.utils
    :members:
@@ -36,8 +38,8 @@ macchiato.utils module
    :show-inheritance:
    :member-order: bysource
 
-macchiato.base module
----------------------
+macchiato.base
+--------------
 
 .. automodule:: macchiato.base
    :members:

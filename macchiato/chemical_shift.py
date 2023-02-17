@@ -27,7 +27,7 @@ import scipy.optimize
 from sklearn.base import RegressorMixin
 
 from .base import FirstNeighbors
-from .plot import CSPlotter
+from .plot import SpectraPlotter
 from .utils import voigt_peak
 
 # ============================================================================
@@ -256,5 +256,5 @@ class ChemicalShiftSpectra:
 
     @property
     def plot(self):
-        """Plot accesor to macchiato.plot.CSPlotter."""
-        return CSPlotter(self)
+        """Plot accesor to :ref:`macchiato.plot` SpectraPlotter."""
+        return SpectraPlotter(self)
