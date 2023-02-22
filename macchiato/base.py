@@ -17,7 +17,7 @@
 # IMPORTS
 # ============================================================================
 
-import exma
+import MDAnalysis as mda
 
 import numpy as np
 
@@ -34,8 +34,12 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
 
     Parameters
     ----------
-    trajectory : `exma.core.AtomicSystem` iterable
-        a molecular dynamics trajectory with the box defined
+    xyz_fname : str
+        a string with the path of the xyz file with the trajectory snapshots
+
+    boxes : iterable
+        iterable with np.ndarray containing the box size
+        [lx, ly, lz, alpha, beta, gamma].
 
     atom_type : str or int
         type of atom on which to analyze the proximity to the clusters
@@ -63,40 +67,37 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
     """
 
     def __init__(
-        self, trajectory, atom_type, cluster_type, rcut_atom, rcut_cluster
+        self,
+        xyz_fname,
+        boxes,
+        atom_type,
+        cluster_type,
+        rcut_atom,
+        rcut_cluster,
     ):
-        self.trajectory = trajectory
+        self.u = mda.Universe(xyz_fname)
 
-        self.atom_type = atom_type
-        self.cluster_type = cluster_type
+        self.boxes = boxes
+
+        self.atom_group = self.u.select_atoms(f"name {atom_type}")
+        self.cluster_group = self.u.select_atoms(f"name {cluster_type}")
+
+        self._n_atoms_type = len(self.atom_group)
+        self._n_cluster_type = len(self.cluster_group)
 
         self.rcut_atom = rcut_atom
         self.rcut_cluster = rcut_cluster
 
-        self._n_atom_type = trajectory[0]._natoms_type(
-            trajectory[0]._mask_type(atom_type)
-        )
-        self._n_cluster_type = trajectory[0]._natoms_type(
-            trajectory[0]._mask_type(cluster_type)
-        )
-
         self.bonded_ = []
         self.isolated_ = []
-        self.contributions_ = np.zeros(self._n_atom_type)
+        self.contributions_ = np.zeros(self._n_atoms_type)
 
-    def _isolated_or_bonded(self, snapshot):
+    def _isolated_or_bonded(self, cluster_distances):
         """Isolated/bonded `cluster_type` atoms per snapshot."""
-        distance_matrix = exma.distances.pbc_distances(
-            snapshot,
-            snapshot,
-            type_c=self.cluster_type,
-            type_i=self.cluster_type,
-        )
-
         db = sklearn.cluster.DBSCAN(
             eps=self.rcut_cluster, min_samples=2, metric="precomputed"
         )
-        db.fit(distance_matrix)
+        db.fit(cluster_distances)
 
         nisol = np.count_nonzero(db.labels_ == -1)
 
@@ -126,15 +127,21 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
         self : object
             fitted model
         """
-        for snapshot in self.trajectory:
-            self._mean_contribution(
-                snapshot, self._isolated_or_bonded(snapshot)
+        for ts, box in zip(self.u.trajectory, self.boxes):
+            cluster_dist = mda.lib.distances.distance_array(
+                self.cluster_group, self.cluster_group, box=box
             )
+            labels = self._isolated_or_bonded(cluster_dist)
+
+            atom_to_cluster_dist = mda.lib.distances.distance_array(
+                self.atom_group, self.cluster_group, box=box
+            )
+            self._mean_contribution(atom_to_cluster_dist, labels)
 
         self.bonded_ = np.mean(self.bonded_) / self._n_cluster_type
         self.isolated_ = np.mean(self.isolated_) / self._n_cluster_type
 
-        self.contributions_ /= len(self.trajectory)
+        self.contributions_ /= len(self.u.trajectory)
 
         return self
 
@@ -145,7 +152,7 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
         ----------
         X : ignored
             not used here, just convention, it uses the snapshots in the
-            trajectory
+            xyz_fname
 
         y : ignored
             not used, just convention

@@ -14,8 +14,6 @@
 import os
 import pathlib
 
-import exma
-
 import numpy as np
 
 import pandas as pd
@@ -36,15 +34,18 @@ def data_path():
 
 @pytest.fixture()
 def Li12Si7(data_path):
-    traj = exma.read_xyz(data_path / "Li12Si7.xyz")
-    traj[0].box = np.array([8.53123776, 19.62266159, 14.31268194])
+    xyz_fname = str(data_path / "Li12Si7.xyz")
+    boxes = [
+        np.array([8.53123776, 19.62266159, 14.31268194, 90.0, 90.0, 90.0])
+    ]
 
     df = pd.read_csv(data_path / "Li12Si7.csv", header=None)
     ppm = df.iloc[:, 0].to_numpy().reshape(-1, 1)
     intensity = (df.iloc[:, 1] - df.iloc[:, 1].min()).to_numpy()
 
     return {
-        "trajectory": traj,
+        "xyz_fname": xyz_fname,
+        "boxes": boxes,
         "bonded": 1.0,
         "isolated": 0.0,
         "contributions": np.full(96, 18.0),
@@ -162,15 +163,15 @@ def Li12Si7(data_path):
 
 @pytest.fixture()
 def Li13Si4(data_path):
-    traj = exma.read_xyz(data_path / "Li13Si4.xyz")
-    traj[0].box = np.array([4.4207350, 7.8979870, 15.011548])
-
+    xyz_fname = str(data_path / "Li13Si4.xyz")
+    boxes = [np.array([4.4207350, 7.8979870, 15.011548, 90.0, 90.0, 90.0])]
     df = pd.read_csv(data_path / "Li13Si4.csv", header=None)
     ppm = df.iloc[:, 0].to_numpy().reshape(-1, 1)
     intensity = (df.iloc[:, 1] - df.iloc[:, 1].min()).to_numpy()
 
     return {
-        "trajectory": traj,
+        "xyz_fname": xyz_fname,
+        "boxes": boxes,
         "bonded": 0.5,
         "isolated": 0.5,
         "contributions": np.array(
@@ -317,15 +318,15 @@ def Li13Si4(data_path):
 
 @pytest.fixture()
 def Li15Si4(data_path):
-    traj = exma.read_xyz(data_path / "Li15Si4.xyz")
-    traj[0].box = np.full(3, 10.566048)
-
+    xyz_fname = str(data_path / "Li15Si4.xyz")
+    boxes = [np.array([10.566048, 10.566048, 10.566048, 90.0, 90.0, 90.0])]
     df = pd.read_csv(data_path / "Li15Si4.csv", header=None)
     ppm = df.iloc[:, 0].to_numpy().reshape(-1, 1)
     intensity = (df.iloc[:, 1] - df.iloc[:, 1].min()).to_numpy()
 
     return {
-        "trajectory": traj,
+        "xyz_fname": xyz_fname,
+        "boxes": boxes,
         "bonded": 0.0,
         "isolated": 1.0,
         "contributions": np.full(60, 6.0),

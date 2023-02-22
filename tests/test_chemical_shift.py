@@ -34,7 +34,8 @@ class TestChemicalShiftCenters:
         structure = request.getfixturevalue(structure)
 
         csc = ChemicalShiftCenters(
-            structure["trajectory"],
+            structure["xyz_fname"],
+            structure["boxes"],
             "Li",
             "Si",
             3.4,
@@ -54,7 +55,8 @@ class TestChemicalShiftCenters:
         structure = request.getfixturevalue(structure)
 
         csc = ChemicalShiftCenters(
-            structure["trajectory"],
+            structure["xyz_fname"],
+            structure["boxes"],
             "Li",
             "Si",
             3.4,

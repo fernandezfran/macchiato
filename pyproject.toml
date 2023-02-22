@@ -30,8 +30,8 @@ classifiers = [
 ]
 urls = { Homepage = "https://github.com/fernandezfran/macchiato" }
 dependencies = [
-    "exma",
     "matplotlib",
+    "mdanalysis",
     "numpy",
     "pandas",
     "scikit-learn",

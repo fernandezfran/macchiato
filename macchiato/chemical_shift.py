@@ -18,8 +18,6 @@ chemical shift spectra."""
 # IMPORTS
 # ============================================================================
 
-import exma
-
 import numpy as np
 
 import scipy.optimize
@@ -40,8 +38,12 @@ class ChemicalShiftCenters(FirstNeighbors):
 
     Parameters
     ----------
-    trajectory : `exma.core.AtomicSystem` iterable
-        a molecular dynamics trajectory with the box defined
+    xyz_fname : str
+        a string with the path of the xyz file with the trajectory snapshots
+
+    boxes : iterable
+        iterable with np.ndarray containing the box size
+        [lx, ly, lz, alpha, beta, gamma].
 
     atom_type : str or int
         type of atom on which to analyze the proximity to the clusters
@@ -74,24 +76,24 @@ class ChemicalShiftCenters(FirstNeighbors):
     """
 
     def __init__(
-        self, trajectory, atom_type, cluster_type, rcut_atom, rcut_cluster, ppm
+        self,
+        xyz_fname,
+        boxes,
+        atom_type,
+        cluster_type,
+        rcut_atom,
+        rcut_cluster,
+        ppm,
     ):
         super().__init__(
-            trajectory, atom_type, cluster_type, rcut_atom, rcut_cluster
+            xyz_fname, boxes, atom_type, cluster_type, rcut_atom, rcut_cluster
         )
 
         self.ppm = ppm
 
-    def _mean_contribution(self, snapshot, labels):
+    def _mean_contribution(self, atom_to_cluster_distances, labels):
         """Mean contribution per atom to the chemical shift spectra."""
-        atom_to_cluster_matrix = exma.distances.pbc_distances(
-            snapshot,
-            snapshot,
-            type_c=self.atom_type,
-            type_i=self.cluster_type,
-        )
-
-        for k, distances in enumerate(atom_to_cluster_matrix):
+        for k, distances in enumerate(atom_to_cluster_distances):
             contribution = 0
             index = np.where(distances < self.rcut_atom)[0]
             for idx in index:
