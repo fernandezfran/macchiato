@@ -51,7 +51,11 @@ def voigt_peak(x, mean, sigma, gamma, heigth=1.0):
     np.ndarray
         evaluation of the voigt peak in the x values given the parameters
     """
-    return heigth * np.real(
-        scipy.special.wofz((x - mean + 1j * gamma) / sigma / np.sqrt(2))
-        / (sigma * np.sqrt(2))
+    return (
+        heigth
+        * np.real(
+            scipy.special.wofz((x - mean + 1j * gamma) / sigma / np.sqrt(2))
+        )
+        / sigma
+        / np.sqrt(2 * np.pi)
     )

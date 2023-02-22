@@ -50,9 +50,9 @@ def Li12Si7(data_path):
         "contributions": np.full(96, 18.0),
         "ppm": ppm,
         "intensity": intensity,
-        "sigma": 0.002251,
-        "gamma": 6.719096,
-        "heigth": 23.648897,
+        "sigma": 0.002342,
+        "gamma": 6.719054,
+        "heigth": 41.916436,
         "ypred": np.array(
             [
                 0.08910164,
@@ -205,9 +205,9 @@ def Li13Si4(data_path):
         ),
         "ppm": ppm,
         "intensity": intensity,
-        "sigma": 0.000831,
-        "gamma": 10.901222,
-        "heigth": 42.766219,
+        "sigma": 0.000733,
+        "gamma": 10.901362,
+        "heigth": 75.801919,
         "ypred": np.array(
             [
                 0.17425487,
@@ -331,9 +331,9 @@ def Li15Si4(data_path):
         "contributions": np.full(60, 6.0),
         "ppm": ppm,
         "intensity": intensity,
-        "sigma": 3.387527,
-        "gamma": 12.730401,
-        "heigth": 50.178243,
+        "sigma": 3.387497,
+        "gamma": 12.730414,
+        "heigth": 88.938638,
         "ypred": np.array(
             [
                 0.18200867,

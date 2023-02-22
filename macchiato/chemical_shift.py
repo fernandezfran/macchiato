@@ -250,7 +250,7 @@ class ChemicalShiftSpectra:
         )
         self.voigt_params = (
             csw
-            if isinstance(csc, np.ndarray)
+            if isinstance(csw, np.ndarray)
             else np.array([csw.sigma_, csw.gamma_, csw.heigth_])
         )
 

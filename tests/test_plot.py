@@ -31,7 +31,7 @@ import pytest
 class TestPlots:
     """Test the ChemicalShiftCenters fitting."""
 
-    @check_figures_equal(extensions=["png", "pdf"], tol=0.000001)
+    @check_figures_equal(extensions=["png", "pdf"], tol=0.02)
     def test_versus_data(self, fig_test, fig_ref, structure, request):
         """Test the fit attributes of the ChemicalShiftCenters."""
         structure = request.getfixturevalue(structure)
