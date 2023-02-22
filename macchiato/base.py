@@ -106,7 +106,7 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
 
         return db.labels_
 
-    def _mean_contribution(self, snapshot, labels):
+    def _mean_contribution(self, atom_to_cluster_distances, labels):
         """Mean contribution of the `atom_type` atoms."""
         raise NotImplementedError
 
