@@ -19,9 +19,7 @@
 
 import matplotlib.pyplot as plt
 
-import numpy as np
-
-from .utils import voigt_peak
+from .utils import nmr_profile
 
 # ============================================================================
 # CLASSES
@@ -67,17 +65,7 @@ class SpectraPlotter:
         """
         ax = plt.gca() if ax is None else ax
 
-        y = np.mean(
-            [
-                voigt_peak(
-                    X,
-                    c,
-                    *self.css.voigt_params,
-                )
-                for c in self.css.centers
-            ],
-            axis=0,
-        ).ravel()
+        y = nmr_profile(X, self.css.centers, *self.css.voigt_params)
 
         ax.plot(X, y, **kwargs)
 

@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""Voigt profile peak."""
+"""NMR profile peaks."""
 
 # ============================================================================
 # IMPORTS
@@ -59,3 +59,34 @@ def voigt_peak(x, mean, sigma, gamma, heigth=1.0):
         / sigma
         / np.sqrt(2 * np.pi)
     )
+
+
+def nmr_profile(X, centers, sigma, gamma, heigth=1.0):
+    """NMR profile with a voigt contribution per center.
+
+    Parameters
+    ----------
+    X : np.ndarray
+        X values to evaluate the voigt peak
+
+    centers : np.ndarray
+        array with expected value or mean per center
+
+    sigma : float
+        the standard deviation of the gaussian component
+
+    gamma : float
+        the half-width at half-maximum of the lorentzian component
+
+    heigth : float, default=1.0
+        optional heigth of the peak
+
+    Returns
+    -------
+    np.ndarray
+        evaluation of the voigt peak in the x values given the parameters
+    """
+    return np.mean(
+        [voigt_peak(X, mean, sigma, gamma, heigth=heigth) for mean in centers],
+        axis=0,
+    ).ravel()

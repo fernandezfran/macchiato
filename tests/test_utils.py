@@ -11,13 +11,25 @@
 # IMPORTS
 # ============================================================================
 
-from macchiato.utils import voigt_peak
+from macchiato.utils import nmr_profile, voigt_peak
 
 import numpy as np
 
 # =============================================================================
 # TESTS
 # =============================================================================
+
+
+def test_nmr_profile():
+    """Test the NMR profile."""
+    ref = np.array(
+        [6.9583, 0.0193, 0.009, 0.0196, 6.9591, 0.0196, 0.009, 0.0193, 6.9583]
+    )
+
+    x = np.arange(-1, 1.01, 0.25)
+    y = nmr_profile(x, np.array([-1, 0, 1]), 0.01, 0.01)
+
+    np.testing.assert_array_almost_equal(y, ref, 4)
 
 
 def test_voigt_peak():

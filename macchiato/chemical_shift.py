@@ -28,7 +28,7 @@ from sklearn.base import RegressorMixin
 
 from .base import FirstNeighbors
 from .plot import SpectraPlotter
-from .utils import voigt_peak
+from .utils import nmr_profile
 
 # ============================================================================
 # CLASSES
@@ -166,15 +166,9 @@ class ChemicalShiftWidth(RegressorMixin):
     def __init__(self, csc):
         self.csc = csc if isinstance(csc, np.ndarray) else csc.contributions_
 
-    def _nmr_profile(self, X, sigma, gamma, heigth):
-        """NMR profile with a contribution per center."""
-        return np.mean(
-            [
-                voigt_peak(X, mean, sigma, gamma, heigth=heigth)
-                for mean in self.csc
-            ],
-            axis=0,
-        ).ravel()
+        self._nmr_profile = lambda X, sigma, gamma, heigth: nmr_profile(
+            X, self.csc, sigma, gamma, heigth
+        )
 
     def fit(self, X, y):
         """Fit the width of the nmr profile to the experimental data.
