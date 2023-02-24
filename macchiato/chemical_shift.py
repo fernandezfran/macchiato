@@ -24,7 +24,7 @@ import scipy.optimize
 
 from sklearn.base import RegressorMixin
 
-from .base import FirstNeighbors
+from .base import NearestNeighbors
 from .plot import SpectraPlotter
 from .utils import nmr_profile
 
@@ -33,7 +33,7 @@ from .utils import nmr_profile
 # ============================================================================
 
 
-class ChemicalShiftCenters(FirstNeighbors):
+class ChemicalShiftCenters(NearestNeighbors):
     """Obtain the peak centers of each atom `atom_type` in a trajectory.
 
     Parameters
@@ -48,8 +48,8 @@ class ChemicalShiftCenters(FirstNeighbors):
         type of atom forming the clusters
 
     rcut_atom : float
-        cutoff radius of first-neighbor of atoms `atom_type` to `cluster_type`
-        ones
+        cutoff radius of first coordination shell of atoms `atom_type` to
+        `cluster_type` ones
 
     rcut_cluster : float
         cutoff radius to consider a cluster of `cluter_type` atoms

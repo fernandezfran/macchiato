@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""FirstNeighbors base class."""
+"""NearestNeighbors base class."""
 
 # ============================================================================
 # IMPORTS
@@ -29,8 +29,8 @@ from sklearn.base import BaseEstimator, ClusterMixin
 # ============================================================================
 
 
-class FirstNeighbors(ClusterMixin, BaseEstimator):
-    """First Neighbors Clustering.
+class NearestNeighbors(ClusterMixin, BaseEstimator):
+    """Nearest Neighbors Clustering.
 
     Parameters
     ----------
@@ -44,8 +44,8 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
         type of atom forming the clusters
 
     rcut_atom : float
-        cutoff radius of first-neighbor of atoms `atom_type` to `cluster_type`
-        ones
+        cutoff radius of first coordination shell of atoms `atom_type` to
+        `cluster_type` ones
 
     rcut_cluster : float
         cutoff radius to consider a cluster of `cluter_type` atoms

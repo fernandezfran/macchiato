@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""Simple first-neighbor model to atom cluster types."""
+"""Simple nearest-neighbor model to atom cluster types."""
 
 # ============================================================================
 # IMPORTS
