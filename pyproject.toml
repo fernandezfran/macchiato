@@ -16,6 +16,7 @@ description = "Simple first-neighbor model to clusters."
 keywords = [
     "clustering",
     "nmr",
+    "nearest-neighbors",
     "chemical-shift",
 ]
 classifiers = [
