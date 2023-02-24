@@ -24,7 +24,7 @@ import pytest
 
 @pytest.mark.parametrize(
     ("structure"),
-    [("Li12Si7"), ("Li13Si4"), ("Li15Si4")],
+    [("Li12Si7"), ("Li7Si3"), ("Li13Si4"), ("Li15Si4")],
 )
 class TestChemicalShiftCenters:
     """Test the ChemicalShiftCenters fitting."""
@@ -34,8 +34,7 @@ class TestChemicalShiftCenters:
         structure = request.getfixturevalue(structure)
 
         csc = ChemicalShiftCenters(
-            structure["xyz_fname"],
-            structure["boxes"],
+            structure["u"],
             "Li",
             "Si",
             3.4,
@@ -55,8 +54,7 @@ class TestChemicalShiftCenters:
         structure = request.getfixturevalue(structure)
 
         csc = ChemicalShiftCenters(
-            structure["xyz_fname"],
-            structure["boxes"],
+            structure["u"],
             "Li",
             "Si",
             3.4,
@@ -73,7 +71,7 @@ class TestChemicalShiftCenters:
 
 @pytest.mark.parametrize(
     ("structure"),
-    [("Li12Si7"), ("Li13Si4"), ("Li15Si4")],
+    [("Li12Si7"), ("Li7Si3"), ("Li13Si4"), ("Li15Si4")],
 )
 class TestChemicalShiftWidth:
     """Test the ChemicalShiftWidth fitting."""
@@ -101,6 +99,7 @@ class TestChemicalShiftWidth:
         ]
 
         ypred = csw.predict(structure["ppm"])
+        print(ypred)
 
         np.testing.assert_array_almost_equal(ypred, structure["ypred"], 5)
 

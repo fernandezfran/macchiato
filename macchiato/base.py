@@ -34,12 +34,8 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
 
     Parameters
     ----------
-    xyz_fname : str
-        a string with the path of the xyz file with the trajectory snapshots
-
-    boxes : iterable
-        iterable with np.ndarray containing the box size
-        [lx, ly, lz, alpha, beta, gamma].
+    u : MDAnalysis.core.universe.Universe
+        a universe with the box defined
 
     atom_type : str or int
         type of atom on which to analyze the proximity to the clusters
@@ -68,16 +64,13 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
 
     def __init__(
         self,
-        xyz_fname,
-        boxes,
+        u,
         atom_type,
         cluster_type,
         rcut_atom,
         rcut_cluster,
     ):
-        self.u = mda.Universe(xyz_fname)
-
-        self.boxes = boxes
+        self.u = u
 
         self.atom_group = self.u.select_atoms(f"name {atom_type}")
         self.cluster_group = self.u.select_atoms(f"name {cluster_type}")
@@ -127,14 +120,14 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
         self : object
             fitted model
         """
-        for ts, box in zip(self.u.trajectory, self.boxes):
+        for ts in self.u.trajectory:
             cluster_dist = mda.lib.distances.distance_array(
-                self.cluster_group, self.cluster_group, box=box
+                self.cluster_group, self.cluster_group, box=self.u.dimensions
             )
             labels = self._isolated_or_bonded(cluster_dist)
 
             atom_to_cluster_dist = mda.lib.distances.distance_array(
-                self.atom_group, self.cluster_group, box=box
+                self.atom_group, self.cluster_group, box=self.u.dimensions
             )
             self._mean_contribution(atom_to_cluster_dist, labels)
 

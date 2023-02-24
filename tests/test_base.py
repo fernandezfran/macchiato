@@ -24,5 +24,5 @@ def test_base_raise(Li12Si7):
     """Test the NotImplementedError."""
     with pytest.raises(NotImplementedError):
         FirstNeighbors(
-            Li12Si7["xyz_fname"], Li12Si7["boxes"], "Li", "Si", None, None
+            Li12Si7["u"], "Li", "Si", None, None
         )._mean_contribution(None, None)

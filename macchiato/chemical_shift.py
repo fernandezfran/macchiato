@@ -38,12 +38,8 @@ class ChemicalShiftCenters(FirstNeighbors):
 
     Parameters
     ----------
-    xyz_fname : str
-        a string with the path of the xyz file with the trajectory snapshots
-
-    boxes : iterable
-        iterable with np.ndarray containing the box size
-        [lx, ly, lz, alpha, beta, gamma].
+    u : MDAnalysis.core.universe.Universe
+        a universe with the box defined
 
     atom_type : str or int
         type of atom on which to analyze the proximity to the clusters
@@ -77,17 +73,14 @@ class ChemicalShiftCenters(FirstNeighbors):
 
     def __init__(
         self,
-        xyz_fname,
-        boxes,
+        u,
         atom_type,
         cluster_type,
         rcut_atom,
         rcut_cluster,
         ppm,
     ):
-        super().__init__(
-            xyz_fname, boxes, atom_type, cluster_type, rcut_atom, rcut_cluster
-        )
+        super().__init__(u, atom_type, cluster_type, rcut_atom, rcut_cluster)
 
         self.ppm = ppm
 

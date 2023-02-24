@@ -26,7 +26,7 @@ import pytest
 
 @pytest.mark.parametrize(
     ("structure"),
-    [("Li12Si7"), ("Li13Si4"), ("Li15Si4")],
+    [("Li12Si7"), ("Li7Si3"), ("Li13Si4"), ("Li15Si4")],
 )
 class TestPlots:
     """Test the ChemicalShiftCenters fitting."""

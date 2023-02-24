@@ -14,6 +14,8 @@
 import os
 import pathlib
 
+import MDAnalysis as mda
+
 import numpy as np
 
 import pandas as pd
@@ -34,18 +36,18 @@ def data_path():
 
 @pytest.fixture()
 def Li12Si7(data_path):
-    xyz_fname = str(data_path / "Li12Si7.xyz")
-    boxes = [
-        np.array([8.53123776, 19.62266159, 14.31268194, 90.0, 90.0, 90.0])
-    ]
+    u = mda.Universe(str(data_path / "Li12Si7.xyz"))
+    for ts in u.trajectory:
+        u.dimensions = np.array(
+            [8.53123776, 19.62266159, 14.31268194, 90.0, 90.0, 90.0]
+        )
 
     df = pd.read_csv(data_path / "Li12Si7.csv", header=None)
     ppm = df.iloc[:, 0].to_numpy().reshape(-1, 1)
     intensity = (df.iloc[:, 1] - df.iloc[:, 1].min()).to_numpy()
 
     return {
-        "xyz_fname": xyz_fname,
-        "boxes": boxes,
+        "u": u,
         "bonded": 1.0,
         "isolated": 0.0,
         "contributions": np.full(96, 18.0),
@@ -162,16 +164,146 @@ def Li12Si7(data_path):
 
 
 @pytest.fixture()
+def Li7Si3(data_path):
+    u = mda.Universe(str(data_path / "Li7Si3.xyz"))
+    for ts in u.trajectory:
+        u.dimensions = np.array([7.579872, 6.564362, 18.002744, 90, 90, 120])
+
+    df = pd.read_csv(data_path / "Li7Si3.csv", header=None)
+    ppm = df.iloc[:, 0].to_numpy().reshape(-1, 1)
+    intensity = (df.iloc[:, 1] - df.iloc[:, 1].min()).to_numpy()
+
+    return {
+        "u": u,
+        "bonded": 1.0,
+        "isolated": 0.0,
+        "contributions": np.full(42, 18.0),
+        "ppm": ppm,
+        "intensity": intensity,
+        "sigma": 9.238755,
+        "gamma": 9.857969,
+        "heigth": 79.86186,
+        "ypred": np.array(
+            [
+                0.30548652,
+                0.32790256,
+                0.35249257,
+                0.37944938,
+                0.40896774,
+                0.44123942,
+                0.4764471,
+                0.51475704,
+                0.55631061,
+                0.60121464,
+                0.64953103,
+                0.70126567,
+                0.75635732,
+                0.81466677,
+                0.87596699,
+                0.9399349,
+                1.00614547,
+                1.07406881,
+                1.14307091,
+                1.21241852,
+                1.2812885,
+                1.34878189,
+                1.41394239,
+                1.47577907,
+                1.53329244,
+                1.58550315,
+                1.63148198,
+                1.67037991,
+                1.70145673,
+                1.72410696,
+                1.73788151,
+                1.74250411,
+                1.73788151,
+                1.72410696,
+                1.70145673,
+                1.67037991,
+                1.63148198,
+                1.58550315,
+                1.53329244,
+                1.47577907,
+                1.41394239,
+                1.34878189,
+                1.2812885,
+                1.21241852,
+                1.14307091,
+                1.07406881,
+                1.00614547,
+                0.9399349,
+                0.87596699,
+                0.81466677,
+                0.75635732,
+                0.70126567,
+                0.64953103,
+                0.60121464,
+                0.55631061,
+                0.51475704,
+                0.4764471,
+                0.44123942,
+                0.40896774,
+                0.37944938,
+                0.35249257,
+                0.32790256,
+                0.30548652,
+                0.28505734,
+                0.26643641,
+                0.24945557,
+                0.23395826,
+                0.21980011,
+                0.20684906,
+                0.19498511,
+                0.18409979,
+                0.17409553,
+                0.16488482,
+                0.15638942,
+                0.14853948,
+                0.14127274,
+                0.13453373,
+                0.12827304,
+                0.12244663,
+                0.11701525,
+                0.11194383,
+                0.10720105,
+                0.10275889,
+                0.09859219,
+                0.09467839,
+                0.09099717,
+                0.08753023,
+                0.08426104,
+                0.08117462,
+                0.07825742,
+                0.07549713,
+                0.07288254,
+                0.07040343,
+                0.06805049,
+                0.06581518,
+                0.0636897,
+                0.06166687,
+                0.05974012,
+                0.05790337,
+            ]
+        ),
+        "score": 0.996806,
+    }
+
+
+@pytest.fixture()
 def Li13Si4(data_path):
-    xyz_fname = str(data_path / "Li13Si4.xyz")
-    boxes = [np.array([4.4207350, 7.8979870, 15.011548, 90.0, 90.0, 90.0])]
+    u = mda.Universe(str(data_path / "Li13Si4.xyz"))
+    for ts in u.trajectory:
+        u.dimensions = np.array(
+            [4.4207350, 7.8979870, 15.011548, 90.0, 90.0, 90.0]
+        )
+
     df = pd.read_csv(data_path / "Li13Si4.csv", header=None)
     ppm = df.iloc[:, 0].to_numpy().reshape(-1, 1)
     intensity = (df.iloc[:, 1] - df.iloc[:, 1].min()).to_numpy()
 
     return {
-        "xyz_fname": xyz_fname,
-        "boxes": boxes,
+        "u": u,
         "bonded": 0.5,
         "isolated": 0.5,
         "contributions": np.array(
@@ -318,15 +450,18 @@ def Li13Si4(data_path):
 
 @pytest.fixture()
 def Li15Si4(data_path):
-    xyz_fname = str(data_path / "Li15Si4.xyz")
-    boxes = [np.array([10.566048, 10.566048, 10.566048, 90.0, 90.0, 90.0])]
+    u = mda.Universe(str(data_path / "Li15Si4.xyz"))
+    for ts in u.trajectory:
+        u.dimensions = np.array(
+            [10.566048, 10.566048, 10.566048, 90.0, 90.0, 90.0]
+        )
+
     df = pd.read_csv(data_path / "Li15Si4.csv", header=None)
     ppm = df.iloc[:, 0].to_numpy().reshape(-1, 1)
     intensity = (df.iloc[:, 1] - df.iloc[:, 1].min()).to_numpy()
 
     return {
-        "xyz_fname": xyz_fname,
-        "boxes": boxes,
+        "u": u,
         "bonded": 0.0,
         "isolated": 1.0,
         "contributions": np.full(60, 6.0),
