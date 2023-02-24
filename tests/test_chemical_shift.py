@@ -99,7 +99,6 @@ class TestChemicalShiftWidth:
         ]
 
         ypred = csw.predict(structure["ppm"])
-        print(ypred)
 
         np.testing.assert_array_almost_equal(ypred, structure["ypred"], 5)
 
