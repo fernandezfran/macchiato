@@ -72,13 +72,7 @@ class ChemicalShiftCenters(FirstNeighbors):
     """
 
     def __init__(
-        self,
-        u,
-        atom_type,
-        cluster_type,
-        rcut_atom,
-        rcut_cluster,
-        ppm,
+        self, u, atom_type, cluster_type, rcut_atom, rcut_cluster, ppm
     ):
         super().__init__(u, atom_type, cluster_type, rcut_atom, rcut_cluster)
 

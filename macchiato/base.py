@@ -62,14 +62,7 @@ class FirstNeighbors(ClusterMixin, BaseEstimator):
         the contribution of the `atom_type` atoms
     """
 
-    def __init__(
-        self,
-        u,
-        atom_type,
-        cluster_type,
-        rcut_atom,
-        rcut_cluster,
-    ):
+    def __init__(self, u, atom_type, cluster_type, rcut_atom, rcut_cluster):
         self.u = u
 
         self.atom_group = self.u.select_atoms(f"name {atom_type}")
