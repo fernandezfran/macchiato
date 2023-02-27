@@ -94,7 +94,7 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         self.rcut_cluster = rcut_cluster
 
         self.start = 0 if start is None else start
-        self.stop = np.inf if stop is None else stop
+        self.stop = len(u.trajectory) if stop is None else stop
         self.step = 1 if step is None else step
 
         self.bonded_ = []
@@ -159,7 +159,7 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         self.bonded_ = np.mean(self.bonded_) / self._n_cluster_type
         self.isolated_ = np.mean(self.isolated_) / self._n_cluster_type
 
-        self.contributions_ /= len(self.u.trajectory)
+        self.contributions_ *= self.step / (self.stop - self.start)
 
         return self
 
