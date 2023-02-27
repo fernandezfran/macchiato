@@ -94,7 +94,7 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         self.rcut_cluster = rcut_cluster
 
         self.start = 0 if start is None else start
-        self.stop = np.inf if start is None else start
+        self.stop = np.inf if stop is None else stop
         self.step = 1 if step is None else step
 
         self.bonded_ = []
