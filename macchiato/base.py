@@ -50,6 +50,15 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
     rcut_cluster : float
         cutoff radius to consider a cluster of `cluter_type` atoms
 
+    start : int, default=None
+        start frame of analysis
+
+    stop : int, default=None
+        stop frame of analysis
+
+    step : int, default=None
+        number of frames to skip between each analyzed one
+
     Attributes
     ----------
     bonded_ : float
@@ -62,7 +71,17 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         the contribution of the `atom_type` atoms
     """
 
-    def __init__(self, u, atom_type, cluster_type, rcut_atom, rcut_cluster):
+    def __init__(
+        self,
+        u,
+        atom_type,
+        cluster_type,
+        rcut_atom,
+        rcut_cluster,
+        start=None,
+        stop=None,
+        step=None,
+    ):
         self.u = u
 
         self.atom_group = self.u.select_atoms(f"name {atom_type}")
@@ -73,6 +92,10 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
 
         self.rcut_atom = rcut_atom
         self.rcut_cluster = rcut_cluster
+
+        self.start = 0 if start is None else start
+        self.stop = np.inf if start is None else start
+        self.step = 1 if step is None else step
 
         self.bonded_ = []
         self.isolated_ = []
@@ -113,16 +136,25 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         self : object
             fitted model
         """
-        for ts in self.u.trajectory:
-            cluster_dist = mda.lib.distances.distance_array(
-                self.cluster_group, self.cluster_group, box=self.u.dimensions
-            )
-            labels = self._isolated_or_bonded(cluster_dist)
+        for i, ts in enumerate(self.u.trajectory):
+            if i < self.start:
+                continue
 
-            atom_to_cluster_dist = mda.lib.distances.distance_array(
-                self.atom_group, self.cluster_group, box=self.u.dimensions
-            )
-            self._mean_contribution(atom_to_cluster_dist, labels)
+            if i % self.step == 0:
+                cluster_dist = mda.lib.distances.distance_array(
+                    self.cluster_group,
+                    self.cluster_group,
+                    box=self.u.dimensions,
+                )
+                labels = self._isolated_or_bonded(cluster_dist)
+
+                atom_to_cluster_dist = mda.lib.distances.distance_array(
+                    self.atom_group, self.cluster_group, box=self.u.dimensions
+                )
+                self._mean_contribution(atom_to_cluster_dist, labels)
+
+            if i >= self.stop:
+                break
 
         self.bonded_ = np.mean(self.bonded_) / self._n_cluster_type
         self.isolated_ = np.mean(self.isolated_) / self._n_cluster_type

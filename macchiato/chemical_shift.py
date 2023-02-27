@@ -58,6 +58,15 @@ class ChemicalShiftCenters(NearestNeighbors):
         dictionary with two keys `bonded` and `isolated` with the contribution
         to the chemical shift spectra of each class
 
+    start : int, default=None
+        start frame of analysis
+
+    stop : int, default=None
+        stop frame of analysis
+
+    step : int, default=None
+        number of frames to skip between each analyzed one
+
     Attributes
     ----------
     bonded_ : float
@@ -72,9 +81,27 @@ class ChemicalShiftCenters(NearestNeighbors):
     """
 
     def __init__(
-        self, u, atom_type, cluster_type, rcut_atom, rcut_cluster, ppm
+        self,
+        u,
+        atom_type,
+        cluster_type,
+        rcut_atom,
+        rcut_cluster,
+        ppm,
+        start=None,
+        stop=None,
+        step=None,
     ):
-        super().__init__(u, atom_type, cluster_type, rcut_atom, rcut_cluster)
+        super().__init__(
+            u,
+            atom_type,
+            cluster_type,
+            rcut_atom,
+            rcut_cluster,
+            start=start,
+            stop=stop,
+            step=step,
+        )
 
         self.ppm = ppm
 
