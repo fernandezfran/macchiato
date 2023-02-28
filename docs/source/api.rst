@@ -18,6 +18,15 @@ macchiato.chemical\_shift
    :show-inheritance:
    :member-order: bysource
 
+macchiato.mossbauer
+-------------------
+
+.. automodule:: macchiato.mossbauer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :member-order: bysource
+
 .. _macchiato.plot:
 
 macchiato.plot
