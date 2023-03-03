@@ -2,4 +2,4 @@
 
 [![macchiatos CI](https://github.com/fernandezfran/macchiato/actions/workflows/CI.yml/badge.svg)](https://github.com/fernandezfran/macchiato/actions/workflows/CI.yml)
 
-Simple nearest-neighbor model to atom cluster types.
+Nearest neighbor model to reproduce experimental measurements with data-driven inference.
