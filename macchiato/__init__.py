@@ -11,7 +11,8 @@
 # DOCS
 # ============================================================================
 
-"""Simple nearest-neighbor model to atom cluster types."""
+"""Nearest neighbors model with data-driven inference to reproduce physical \
+measurements."""
 
 # ============================================================================
 # IMPORTS

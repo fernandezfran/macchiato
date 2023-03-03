@@ -47,6 +47,11 @@ class MossbauerEffect(NearestNeighbors):
         dictionary with two keys `mix` and `unmixed` whit the contribution to
         the splitting of the two peaks in the Mössbauer effect spectroscopy
 
+    threshold : float, default=0.25
+        float between 0 and 1 that indicates the percentage from which there is
+        a mix, for the default case, e.g. when there is 25% of the element with
+        the lowest concentration it is considered that there is a mix
+
     start : int, default=None
         start frame of analysis
 
@@ -64,7 +69,15 @@ class MossbauerEffect(NearestNeighbors):
     """
 
     def __init__(
-        self, u, atom_type, rcut, mossbauer, start=None, stop=None, step=None
+        self,
+        u,
+        atom_type,
+        rcut,
+        mossbauer,
+        threshold=0.25,
+        start=None,
+        stop=None,
+        step=None,
     ):
         super().__init__(u, atom_type, start=start, stop=stop, step=step)
 
@@ -74,6 +87,7 @@ class MossbauerEffect(NearestNeighbors):
         self.rcut = rcut
 
         self.mossbauer = mossbauer
+        self.threshold = threshold
 
     def _mean_contribution(self, all_distances):
         """Mean contribution per atom to the delta between peaks."""
@@ -89,7 +103,11 @@ class MossbauerEffect(NearestNeighbors):
             lowest = min(conc, 1 - conc)
 
             self.contributions_[i] += np.mean(
-                [self.mossbauer["mix" if lowest >= 0.25 else "unmixed"]]
+                [
+                    self.mossbauer[
+                        "mix" if lowest >= self.threshold else "unmixed"
+                    ]
+                ]
             )
 
     def fit(self, X, y=None, sample_weight=None):
