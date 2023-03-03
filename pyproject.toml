@@ -12,8 +12,7 @@ version = "0.0.1"
 authors = [{name = "Francisco Fernandez", email = "fernandezfrancisco2195@gmail.com"}]
 readme = "README.md"
 license = {file = "LICENSE"}
-description = "Nearest neighbors model with data-driven inference to reproduce physical."
-measurements.
+description = "Nearest neighbors model with data-driven inference to reproduce physical measurements."
 keywords = [
     "clustering",
     "nmr",
