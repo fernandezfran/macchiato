@@ -17,11 +17,8 @@
 # IMPORTS
 # ============================================================================
 
-import MDAnalysis as mda
-
 import numpy as np
 
-import sklearn.cluster
 from sklearn.base import BaseEstimator, ClusterMixin
 
 # ============================================================================
@@ -39,16 +36,6 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
 
     atom_type : str or int
         type of atom on which to analyze the proximity to the clusters
-
-    cluster_type : str or int
-        type of atom forming the clusters
-
-    rcut_atom : float
-        cutoff radius of first coordination shell of atoms `atom_type` to
-        `cluster_type` ones
-
-    rcut_cluster : float
-        cutoff radius to consider a cluster of `cluter_type` atoms
 
     start : int, default=None
         start frame of analysis
@@ -71,27 +58,11 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         the contribution of the `atom_type` atoms
     """
 
-    def __init__(
-        self,
-        u,
-        atom_type,
-        cluster_type,
-        rcut_atom,
-        rcut_cluster,
-        start=None,
-        stop=None,
-        step=None,
-    ):
+    def __init__(self, u, atom_type, start=None, stop=None, step=None):
         self.u = u
 
-        self.atom_group = self.u.select_atoms(f"name {atom_type}")
-        self.cluster_group = self.u.select_atoms(f"name {cluster_type}")
-
+        self.atom_group = u.select_atoms(f"name {atom_type}")
         self._n_atoms_type = len(self.atom_group)
-        self._n_cluster_type = len(self.cluster_group)
-
-        self.rcut_atom = rcut_atom
-        self.rcut_cluster = rcut_cluster
 
         self.start = 0 if start is None else start
         self.stop = len(u.trajectory) if stop is None else stop
@@ -100,24 +71,6 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         self.bonded_ = []
         self.isolated_ = []
         self.contributions_ = np.zeros(self._n_atoms_type)
-
-    def _isolated_or_bonded(self, cluster_distances):
-        """Isolated/bonded `cluster_type` atoms per snapshot."""
-        db = sklearn.cluster.DBSCAN(
-            eps=self.rcut_cluster, min_samples=2, metric="precomputed"
-        )
-        db.fit(cluster_distances)
-
-        nisol = np.count_nonzero(db.labels_ == -1)
-
-        self.isolated_.append(nisol)
-        self.bonded_.append(self._n_cluster_type - nisol)
-
-        return db.labels_
-
-    def _mean_contribution(self, atom_to_cluster_distances, labels):
-        """Mean contribution of the `atom_type` atoms."""
-        raise NotImplementedError
 
     def fit(self, X, y=None, sample_weight=None):
         """Fit method.
@@ -136,32 +89,7 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         self : object
             fitted model
         """
-        for i, ts in enumerate(self.u.trajectory):
-            if i < self.start:
-                continue
-
-            if i % self.step == 0:
-                cluster_dist = mda.lib.distances.distance_array(
-                    self.cluster_group,
-                    self.cluster_group,
-                    box=self.u.dimensions,
-                )
-                labels = self._isolated_or_bonded(cluster_dist)
-
-                atom_to_cluster_dist = mda.lib.distances.distance_array(
-                    self.atom_group, self.cluster_group, box=self.u.dimensions
-                )
-                self._mean_contribution(atom_to_cluster_dist, labels)
-
-            if i >= self.stop:
-                break
-
-        self.bonded_ = np.mean(self.bonded_) / self._n_cluster_type
-        self.isolated_ = np.mean(self.isolated_) / self._n_cluster_type
-
-        self.contributions_ *= self.step / (self.stop - self.start)
-
-        return self
+        raise NotImplementedError
 
     def fit_predict(self, X, y=None, sample_weight=None):
         """Compute the clustering and predict the contributions.

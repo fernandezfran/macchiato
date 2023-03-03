@@ -18,10 +18,13 @@ chemical shift spectra."""
 # IMPORTS
 # ============================================================================
 
+import MDAnalysis as mda
+
 import numpy as np
 
 import scipy.optimize
 
+import sklearn.cluster
 from sklearn.base import RegressorMixin
 
 from .base import NearestNeighbors
@@ -92,18 +95,36 @@ class ChemicalShiftCenters(NearestNeighbors):
         stop=None,
         step=None,
     ):
+        self.cluster_group = u.select_atoms(f"name {cluster_type}")
+
+        self._n_cluster_type = len(self.cluster_group)
+
+        self.rcut_atom = rcut_atom
+        self.rcut_cluster = rcut_cluster
+
         super().__init__(
             u,
             atom_type,
-            cluster_type,
-            rcut_atom,
-            rcut_cluster,
             start=start,
             stop=stop,
             step=step,
         )
 
         self.ppm = ppm
+
+    def _isolated_or_bonded(self, cluster_distances):
+        """Isolated/bonded `cluster_type` atoms per snapshot."""
+        db = sklearn.cluster.DBSCAN(
+            eps=self.rcut_cluster, min_samples=2, metric="precomputed"
+        )
+        db.fit(cluster_distances)
+
+        nisol = np.count_nonzero(db.labels_ == -1)
+
+        self.isolated_.append(nisol)
+        self.bonded_.append(self._n_cluster_type - nisol)
+
+        return db.labels_
 
     def _mean_contribution(self, atom_to_cluster_distances, labels):
         """Mean contribution per atom to the chemical shift spectra."""
@@ -136,7 +157,32 @@ class ChemicalShiftCenters(NearestNeighbors):
         self : object
             fitted model
         """
-        return super().fit(X, y, sample_weight)
+        for i, ts in enumerate(self.u.trajectory):
+            if i < self.start:
+                continue
+
+            if i % self.step == 0:
+                cluster_dist = mda.lib.distances.distance_array(
+                    self.cluster_group,
+                    self.cluster_group,
+                    box=self.u.dimensions,
+                )
+                labels = self._isolated_or_bonded(cluster_dist)
+
+                atom_to_cluster_dist = mda.lib.distances.distance_array(
+                    self.atom_group, self.cluster_group, box=self.u.dimensions
+                )
+                self._mean_contribution(atom_to_cluster_dist, labels)
+
+            if i >= self.stop:
+                break
+
+        self.bonded_ = np.mean(self.bonded_) / self._n_cluster_type
+        self.isolated_ = np.mean(self.isolated_) / self._n_cluster_type
+
+        self.contributions_ *= self.step / (self.stop - self.start)
+
+        return self
 
     def fit_predict(self, X, y=None, sample_weight=None):
         """Compute the clustering and predict the chemical shift centers.

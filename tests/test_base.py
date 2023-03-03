@@ -23,6 +23,5 @@ import pytest
 def test_base_raise(Li12Si7):
     """Test the NotImplementedError."""
     with pytest.raises(NotImplementedError):
-        NearestNeighbors(
-            Li12Si7["u"], "Li", "Si", None, None
-        )._mean_contribution(None, None)
+        nn = NearestNeighbors(Li12Si7["u"], "Li")
+        nn.fit(None)
