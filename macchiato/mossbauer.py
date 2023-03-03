@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""Mössbauer Effect."""
+"""Mössbauer Effect Spectroscopy."""
 
 # ============================================================================
 # IMPORTS
@@ -29,7 +29,7 @@ from .base import NearestNeighbors
 
 
 class MossbauerEffect(NearestNeighbors):
-    """Mossbauer Effect.
+    """Delta of a splitting in a two-contribution peak in Mossbauer Effect.
 
     Parameters
     ----------
