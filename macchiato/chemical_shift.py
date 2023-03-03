@@ -102,13 +102,9 @@ class ChemicalShiftCenters(NearestNeighbors):
         self.rcut_atom = rcut_atom
         self.rcut_cluster = rcut_cluster
 
-        super().__init__(
-            u,
-            atom_type,
-            start=start,
-            stop=stop,
-            step=step,
-        )
+        super().__init__(u, atom_type, start=start, stop=stop, step=step)
+
+        self.bonded_, self.isolated_ = [], []
 
         self.ppm = ppm
 

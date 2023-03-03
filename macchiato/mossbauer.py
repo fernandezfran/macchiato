@@ -17,6 +17,10 @@
 # IMPORTS
 # ============================================================================
 
+import MDAnalysis as mda
+
+import numpy as np
+
 from .base import NearestNeighbors
 
 # ============================================================================
@@ -33,17 +37,15 @@ class MossbauerEffect(NearestNeighbors):
         a universe with the box defined
 
     atom_type : str or int
-        type of atom on which to analyze the proximity to the clusters
+        type of atom to be analyzed
 
-    cluster_type : str or int
-        type of atom forming the clusters
+    rcut : float
+        cutoff radius of first coordination shell of atoms `atom_type` to the
+        rest
 
-    rcut_atom : float
-        cutoff radius of first coordination shell of atoms `atom_type` to
-        `cluster_type` ones
-
-    rcut_cluster : float
-        cutoff radius to consider a cluster of `cluter_type` atoms
+    mossbauer : dict
+        dictionary with two keys `mix` and `unmixed` whit the contribution to
+        the splitting of the two peaks in the Mössbauer effect spectroscopy
 
     start : int, default=None
         start frame of analysis
@@ -56,50 +58,97 @@ class MossbauerEffect(NearestNeighbors):
 
     Attributes
     ----------
-    bonded_ : float
-        the percentage of bonded cluters of `cluster_type` atoms
-
-    isolated_ : float
-        the percentage of isolated `cluster_type` atoms
-
     contributions_ : numpy.ndarray
-        the mean of the peak in the chemical shift spectra per atom of the
-        `atom_type` type
+        the mean of the Mössbauer effect delta between spectra peaks per
+        `atom_type` atom
     """
 
     def __init__(
         self,
         u,
         atom_type,
-        cluster_type,
-        rcut_atom,
-        rcut_cluster,
+        rcut,
+        mossbauer,
         start=None,
         stop=None,
         step=None,
     ):
-        super().__init__(
-            u,
-            atom_type,
-            cluster_type,
-            rcut_atom,
-            rcut_cluster,
-            start=start,
-            stop=stop,
-            step=step,
-        )
+        super().__init__(u, atom_type, start=start, stop=stop, step=step)
 
-    def _mean_contribution(self, atom_to_cluster_distances, labels):
-        """To be implemented."""
-        raise NotImplementedError
+        self.atom_type = atom_type
+        self.all_atoms = u.select_atoms("all")
+
+        self.rcut = rcut
+
+        self.mossbauer = mossbauer
+
+    def _mean_contribution(self, distances):
+        """Mean contribution per atom to the delta between peaks."""
+        for i, distance in distances:
+            first_coordination_shell = np.where(distances < self.rcut)[0]
+
+            conc = np.sum(
+                [
+                    neighbor.name == self.atom_type
+                    for neighbor in first_coordination_shell
+                ]
+            )
+            lowest = np.abs(conc / first_coordination_shell.size - 0.5)
+
+            self.contributions_[i] += np.mean(
+                [self.mossbauer["mix" if lowest >= 0.25 else "unmixed"]]
+            )
 
     def fit(self, X, y=None, sample_weight=None):
         """Fit method.
 
-        To be implemented.
+        Parameters
+        ----------
+        X : ignored
+            not used here, just convention, it uses the snapshots in the
+            trajectory
+
+        y : ignored
+            not used, just convention
+
+        Returns
+        -------
+        self : object
+            fitted model
         """
-        raise NotImplementedError
+        for i, ts in enumerate(self.u.trajectory):
+            if i < self.start:
+                continue
+
+            if i % self.step == 0:
+                distances = mda.lib.distances.distance_array(
+                    self.atom_group, self.all_atoms, box=self.u.dimensions
+                )
+                self._mean_contribution(distances)
+
+            if i >= self.stop:
+                break
+
+        self.contributions_ *= self.step / (self.stop - self.start)
+
+        return self
 
     def fit_predict(self, X, y=None, sample_weight=None):
-        """To be implemented."""
+        """Compute the clustering and predict the delta splitting.
+
+        Parameters
+        ----------
+        X : ignored
+            not used here, just convention, it uses the snapshots in the
+            trajectory
+
+        y : ignored
+            not used, just convention
+
+        Returns
+        -------
+        contributions_ : numpy.ndarray
+            the mean of the Mössbauer effect delta between spectra peaks per
+            `atom_type` atom
+        """
         return super().fit_predict(X, y, sample_weight)

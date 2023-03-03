@@ -48,12 +48,6 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
 
     Attributes
     ----------
-    bonded_ : float
-        the percentage of bonded cluters of `cluster_type` atoms
-
-    isolated_ : float
-        the percentage of isolated `cluster_type` atoms
-
     contributions_ : np.array
         the contribution of the `atom_type` atoms
     """
@@ -68,8 +62,6 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         self.stop = len(u.trajectory) if stop is None else stop
         self.step = 1 if step is None else step
 
-        self.bonded_ = []
-        self.isolated_ = []
         self.contributions_ = np.zeros(self._n_atoms_type)
 
     def fit(self, X, y=None, sample_weight=None):
