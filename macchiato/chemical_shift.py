@@ -107,17 +107,17 @@ class ChemicalShiftCenters(NearestNeighbors):
 
     def _mean_contribution(self, atom_to_cluster_distances, labels):
         """Mean contribution per atom to the chemical shift spectra."""
-        for k, distances in enumerate(atom_to_cluster_distances):
-            contribution = 0
-            index = np.where(distances < self.rcut_atom)[0]
-            for idx in index:
-                contribution += (
-                    self.ppm["isolated"]
-                    if labels[idx] == -1
-                    else self.ppm["bonded"]
-                )
+        for i, distances in enumerate(atom_to_cluster_distances):
+            first_coordination_shell = np.where(distances < self.rcut_atom)[0]
 
-            self.contributions_[k] += contribution / index.size
+            self.contributions_[i] += np.mean(
+                [
+                    self.ppm[
+                        "isolated" if labels[neighbor] == -1 else "bonded"
+                    ]
+                    for neighbor in first_coordination_shell
+                ]
+            )
 
     def fit(self, X, y=None, sample_weight=None):
         """Fit method.
