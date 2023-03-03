@@ -111,9 +111,7 @@ class ChemicalShiftCenters(NearestNeighbors):
     def _isolated_or_bonded(self):
         """Isolated/bonded `cluster_type` atoms per snapshot."""
         cluster_distances = mda.lib.distances.distance_array(
-            self.cluster_group,
-            self.cluster_group,
-            box=self.u.dimensions,
+            self.cluster_group, self.cluster_group, box=self.u.dimensions
         )
         db = sklearn.cluster.DBSCAN(
             eps=self.rcut_cluster, min_samples=2, metric="precomputed"
@@ -134,6 +132,7 @@ class ChemicalShiftCenters(NearestNeighbors):
         atom_to_cluster_dist = mda.lib.distances.distance_array(
             self.atom_group, self.cluster_group, box=self.u.dimensions
         )
+
         for i, distances in enumerate(atom_to_cluster_dist):
             first_coordination_shell = np.where(distances < self.rcut_atom)[0]
 
