@@ -108,8 +108,13 @@ class ChemicalShiftCenters(NearestNeighbors):
 
         self.ppm = ppm
 
-    def _isolated_or_bonded(self, cluster_distances):
+    def _isolated_or_bonded(self):
         """Isolated/bonded `cluster_type` atoms per snapshot."""
+        cluster_distances = mda.lib.distances.distance_array(
+            self.cluster_group,
+            self.cluster_group,
+            box=self.u.dimensions,
+        )
         db = sklearn.cluster.DBSCAN(
             eps=self.rcut_cluster, min_samples=2, metric="precomputed"
         )
@@ -122,9 +127,14 @@ class ChemicalShiftCenters(NearestNeighbors):
 
         return db.labels_
 
-    def _mean_contribution(self, atom_to_cluster_distances, labels):
+    def _mean_contribution(self):
         """Mean contribution per atom to the chemical shift spectra."""
-        for i, distances in enumerate(atom_to_cluster_distances):
+        labels = self._isolated_or_bonded()
+
+        atom_to_cluster_dist = mda.lib.distances.distance_array(
+            self.atom_group, self.cluster_group, box=self.u.dimensions
+        )
+        for i, distances in enumerate(atom_to_cluster_dist):
             first_coordination_shell = np.where(distances < self.rcut_atom)[0]
 
             self.contributions_[i] += np.mean(
@@ -153,30 +163,10 @@ class ChemicalShiftCenters(NearestNeighbors):
         self : object
             fitted model
         """
-        for i, ts in enumerate(self.u.trajectory):
-            if i < self.start:
-                continue
-
-            if i % self.step == 0:
-                cluster_dist = mda.lib.distances.distance_array(
-                    self.cluster_group,
-                    self.cluster_group,
-                    box=self.u.dimensions,
-                )
-                labels = self._isolated_or_bonded(cluster_dist)
-
-                atom_to_cluster_dist = mda.lib.distances.distance_array(
-                    self.atom_group, self.cluster_group, box=self.u.dimensions
-                )
-                self._mean_contribution(atom_to_cluster_dist, labels)
-
-            if i >= self.stop:
-                break
+        super().fit(X, y, sample_weight)
 
         self.bonded_ = np.mean(self.bonded_) / self._n_cluster_type
         self.isolated_ = np.mean(self.isolated_) / self._n_cluster_type
-
-        self.contributions_ *= self.step / (self.stop - self.start)
 
         return self
 

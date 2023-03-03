@@ -89,8 +89,12 @@ class MossbauerEffect(NearestNeighbors):
         self.mossbauer = mossbauer
         self.threshold = threshold
 
-    def _mean_contribution(self, all_distances):
+    def _mean_contribution(self):
         """Mean contribution per atom to the delta between peaks."""
+        all_distances = mda.lib.distances.distance_array(
+            self.atom_group, self.all_atoms, box=self.u.dimensions
+        )
+
         for i, distances in enumerate(all_distances):
             first_coordination_shell = np.where(distances < self.rcut)[0]
 
@@ -127,22 +131,7 @@ class MossbauerEffect(NearestNeighbors):
         self : object
             fitted model
         """
-        for i, ts in enumerate(self.u.trajectory):
-            if i < self.start:
-                continue
-
-            if i % self.step == 0:
-                all_distances = mda.lib.distances.distance_array(
-                    self.atom_group, self.all_atoms, box=self.u.dimensions
-                )
-                self._mean_contribution(all_distances)
-
-            if i >= self.stop:
-                break
-
-        self.contributions_ *= self.step / (self.stop - self.start)
-
-        return self
+        return super().fit(X, y, sample_weight)
 
     def fit_predict(self, X, y=None, sample_weight=None):
         """Compute the clustering and predict the delta splitting.

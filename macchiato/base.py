@@ -64,6 +64,10 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
 
         self.contributions_ = np.zeros(self._n_atoms_type)
 
+    def _mean_contribution(self):
+        """To be implemented in child classes."""
+        raise NotImplementedError
+
     def fit(self, X, y=None, sample_weight=None):
         """Fit method.
 
@@ -81,7 +85,19 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         self : object
             fitted model
         """
-        raise NotImplementedError
+        for i, ts in enumerate(self.u.trajectory):
+            if i < self.start:
+                continue
+
+            if i % self.step == 0:
+                self._mean_contribution()
+
+            if i >= self.stop:
+                break
+
+        self.contributions_ *= self.step / (self.stop - self.start)
+
+        return self
 
     def fit_predict(self, X, y=None, sample_weight=None):
         """Compute the clustering and predict the contributions.
