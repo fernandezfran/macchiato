@@ -24,6 +24,7 @@ from .chemical_shift import (
     ChemicalShiftSpectra,
     ChemicalShiftWidth,
 )
+from .mossbauer import MossbauerEffect
 
 # ============================================================================
 # CONSTANTS
@@ -33,6 +34,7 @@ __all__ = [
     "ChemicalShiftCenters",
     "ChemicalShiftWidth",
     "ChemicalShiftSpectra",
+    "MossbauerEffect",
 ]
 
 NAME = "macchiato"

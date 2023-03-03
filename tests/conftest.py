@@ -160,6 +160,9 @@ def Li12Si7(data_path):
             ]
         ),
         "score": 0.993099,
+        "mossbauer_contributions": np.concatenate(
+            (np.full(40, 1.2), np.full(12, 0.4), np.full(4, 1.2))
+        ),
     }
 
 
@@ -287,6 +290,7 @@ def Li7Si3(data_path):
             ]
         ),
         "score": 0.996806,
+        "mossbauer_contributions": np.full(18, 1.2),
     }
 
 
@@ -445,6 +449,7 @@ def Li13Si4(data_path):
             ]
         ),
         "score": 0.991874,
+        "mossbauer_contributions": np.full(8, 0.4),
     }
 
 
@@ -574,4 +579,5 @@ def Li15Si4(data_path):
             ]
         ),
         "score": 0.965234,
+        "mossbauer_contributions": np.full(16, 0.4),
     }
