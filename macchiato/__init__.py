@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""Nearest neighbors model with data-driven inference to reproduce physical \
+"""Nearest neighbors model with data-driven inference to predict physical \
 measurements."""
 
 # ============================================================================
