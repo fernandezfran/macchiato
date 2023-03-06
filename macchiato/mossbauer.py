@@ -47,9 +47,9 @@ class MossbauerEffect(NearestNeighbors):
         dictionary with two keys `mix` and `unmixed` whit the contribution to
         the splitting of the two peaks in the Mössbauer effect spectroscopy
 
-    threshold : float, default=0.25
+    threshold : float, default=0.3
         float between 0 and 1 that indicates the percentage from which there is
-        a mix, for the default case, e.g. when there is 25% of the element with
+        a mix, for the default case, e.g. when there is 30% of the element with
         the lowest concentration it is considered that there is a mix
 
     start : int, default=None
