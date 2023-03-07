@@ -89,6 +89,10 @@ class MossbauerEffect(NearestNeighbors):
         self.mossbauer = mossbauer
         self.threshold = threshold
 
+    def _contribution(self, lowest):
+        """Contribution of each `atom_type` atom given the lowest value."""
+        return self.mossbauer["mix" if lowest >= self.threshold else "unmixed"]
+
     def _mean_contribution(self):
         """Mean contribution per atom to the delta between peaks."""
         all_distances = mda.lib.distances.distance_array(
@@ -106,9 +110,7 @@ class MossbauerEffect(NearestNeighbors):
             )
             lowest = min(conc, 1 - conc)
 
-            self.contributions_[i] += self.mossbauer[
-                "mix" if lowest >= self.threshold else "unmixed"
-            ]
+            self.contributions_[i] += self._contribution(lowest)
 
     def fit(self, X, y=None, sample_weight=None):
         """Fit method.
