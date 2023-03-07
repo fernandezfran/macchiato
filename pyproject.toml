@@ -14,10 +14,10 @@ readme = "README.md"
 license = {file = "LICENSE"}
 description = "Nearest neighbors model with data-driven inference to reproduce physical measurements."
 keywords = [
-    "clustering",
-    "nmr",
+    "data-driven-model",
     "nearest-neighbors",
-    "chemical-shift",
+    "inference",
+    "clustering",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
