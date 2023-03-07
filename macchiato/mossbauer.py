@@ -106,13 +106,9 @@ class MossbauerEffect(NearestNeighbors):
             )
             lowest = min(conc, 1 - conc)
 
-            self.contributions_[i] += np.mean(
-                [
-                    self.mossbauer[
-                        "mix" if lowest >= self.threshold else "unmixed"
-                    ]
-                ]
-            )
+            self.contributions_[i] += self.mossbauer[
+                "mix" if lowest >= self.threshold else "unmixed"
+            ]
 
     def fit(self, X, y=None, sample_weight=None):
         """Fit method.
