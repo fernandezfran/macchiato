@@ -17,7 +17,7 @@ You can install the actual version of macchiato with
 [pip](https://pip.pypa.io/en/latest/)
 
 ```
-pip install git+https://github.com/fernandezfran/galpynostatic
+pip install git+https://github.com/fernandezfran/macchiato
 ```
 
 
