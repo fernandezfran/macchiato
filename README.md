@@ -9,3 +9,26 @@ an in-depth understanding of the physics of the processes involved. In the
 intrinsic behavior of silicon anodes for lithium-ion batteries, two 
 contributions are always observed in different experiments that have not yet 
 been elucidated. These models attempt to better interpret these peculiarities.
+
+
+## Installation
+
+You can install the actual version of macchiato with
+[pip](https://pip.pypa.io/en/latest/)
+
+```
+pip install git+https://github.com/fernandezfran/galpynostatic
+```
+
+
+## Citation
+
+> Autores. (Año). Título. _Revista_. DOI
+
+BibTeX entry:
+
+```bibtex
+@article{
+    ...
+}
+```
