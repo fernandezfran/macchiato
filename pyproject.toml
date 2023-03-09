@@ -12,7 +12,7 @@ version = "0.0.1"
 authors = [{name = "Francisco Fernandez", email = "fernandezfrancisco2195@gmail.com"}]
 readme = "README.md"
 license = {file = "LICENSE"}
-description = "A data-driven nearest-neighbors model to predict physical measurements."
+description = "Data-driven nearest-neighbors models to predict physical measurements."
 keywords = [
     "data-driven-model",
     "nearest-neighbors",

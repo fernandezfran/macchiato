@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""A data-driven nearest-neighbors model to predict physical measurements."""
+"""Data-driven nearest-neighbors models to predict physical measurements."""
 
 # ============================================================================
 # IMPORTS
