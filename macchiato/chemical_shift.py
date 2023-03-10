@@ -88,18 +88,15 @@ class ChemicalShiftCenters(NearestNeighbors):
     """
 
     def __init__(self, u, start=None, stop=None, step=None):
+        self._cfg = CONFIG["chemical_shift"]
         self.cluster_group = u.select_atoms(
-            f"name {CONFIG['chemical_shift']['cluster_type']}"
+            f"name {self._cfg['cluster_type']}"
         )
 
         self._n_cluster_type = len(self.cluster_group)
 
         super().__init__(
-            u,
-            CONFIG["chemical_shift"]["atom_type"],
-            start=start,
-            stop=stop,
-            step=step,
+            u, self._cfg["atom_type"], start=start, stop=stop, step=step
         )
 
         self.bonded_, self.isolated_ = [], []
@@ -110,9 +107,7 @@ class ChemicalShiftCenters(NearestNeighbors):
             self.cluster_group, self.cluster_group, box=self.u.dimensions
         )
         db = sklearn.cluster.DBSCAN(
-            eps=CONFIG["chemical_shift"]["rcut_cluster"],
-            min_samples=2,
-            metric="precomputed",
+            eps=self._cfg["rcut_cluster"], min_samples=2, metric="precomputed"
         )
         db.fit(cluster_distances)
 
@@ -133,12 +128,12 @@ class ChemicalShiftCenters(NearestNeighbors):
 
         for i, distances in enumerate(atom_to_cluster_dist):
             first_coordination_shell = np.where(
-                distances < CONFIG["chemical_shift"]["rcut_atom"]
+                distances < self._cfg["rcut_atom"]
             )[0]
 
             self.contributions_[i] += np.mean(
                 [
-                    CONFIG["chemical_shift"]["contributions"][
+                    self._cfg["contributions"][
                         "isolated" if labels[neighbor] == -1 else "bonded"
                     ]
                     for neighbor in first_coordination_shell

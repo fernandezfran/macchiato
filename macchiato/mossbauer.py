@@ -67,20 +67,18 @@ class MossbauerEffect(NearestNeighbors):
     """
 
     def __init__(self, u, start=None, stop=None, step=None):
+        self._cfg = CONFIG["mossbauer"]
+
         super().__init__(
-            u,
-            CONFIG["mossbauer"]["atom_type"],
-            start=start,
-            stop=stop,
-            step=step,
+            u, self._cfg["atom_type"], start=start, stop=stop, step=step
         )
 
         self.all_atoms = u.select_atoms("all")
 
     def _contribution(self, lowest):
         """Contribution of each Si atom given the lowest value."""
-        return CONFIG["mossbauer"]["contributions"][
-            "mix" if lowest >= CONFIG["mossbauer"]["threshold"] else "unmixed"
+        return self._cfg["contributions"][
+            "mix" if lowest >= self._cfg["threshold"] else "unmixed"
         ]
 
     def _mean_contribution(self):
@@ -90,14 +88,13 @@ class MossbauerEffect(NearestNeighbors):
         )
 
         for i, distances in enumerate(all_distances):
-            first_coordination_shell = np.where(
-                distances < CONFIG["mossbauer"]["rcut"]
-            )[0]
+            first_coordination_shell = np.where(distances < self._cfg["rcut"])[
+                0
+            ]
 
             conc = np.mean(
                 [
-                    self.all_atoms[neighbor].name
-                    == CONFIG["mossbauer"]["atom_type"]
+                    self.all_atoms[neighbor].name == self._cfg["atom_type"]
                     for neighbor in first_coordination_shell
                 ]
             )
