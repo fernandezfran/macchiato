@@ -3,6 +3,7 @@ include README.md
 include pyproject.toml
 
 recursive-include macchiato *.py
+recursive-include macchiato *.yml
 
 exclude requirements_dev.txt
 exclude tox.ini

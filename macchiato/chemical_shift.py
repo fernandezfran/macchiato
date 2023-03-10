@@ -28,6 +28,7 @@ import sklearn.cluster
 from sklearn.base import RegressorMixin
 
 from .base import NearestNeighbors
+from .config import CONFIG
 from .plot import SpectraPlotter
 from .utils import nmr_profile
 
@@ -43,23 +44,6 @@ class ChemicalShiftCenters(NearestNeighbors):
     ----------
     u : MDAnalysis.core.universe.Universe
         a universe with the box defined
-
-    atom_type : str or int
-        type of atom on which to analyze the proximity to the clusters
-
-    cluster_type : str or int
-        type of atom forming the clusters
-
-    rcut_atom : float
-        cutoff radius of first coordination shell of atoms `atom_type` to
-        `cluster_type` ones
-
-    rcut_cluster : float
-        cutoff radius to consider a cluster of `cluter_type` atoms
-
-    ppm : dict
-        dictionary with two keys `bonded` and `isolated` with the contribution
-        to the chemical shift spectra of each class
 
     start : int, default=None
         start frame of analysis
@@ -83,30 +67,22 @@ class ChemicalShiftCenters(NearestNeighbors):
         `atom_type` type
     """
 
-    def __init__(
-        self,
-        u,
-        atom_type,
-        cluster_type,
-        rcut_atom,
-        rcut_cluster,
-        ppm,
-        start=None,
-        stop=None,
-        step=None,
-    ):
-        self.cluster_group = u.select_atoms(f"name {cluster_type}")
+    def __init__(self, u, start=None, stop=None, step=None):
+        self.cluster_group = u.select_atoms(
+            f"name {CONFIG['chemical_shift']['cluster_type']}"
+        )
 
         self._n_cluster_type = len(self.cluster_group)
 
-        self.rcut_atom = rcut_atom
-        self.rcut_cluster = rcut_cluster
-
-        super().__init__(u, atom_type, start=start, stop=stop, step=step)
+        super().__init__(
+            u,
+            CONFIG["chemical_shift"]["atom_type"],
+            start=start,
+            stop=stop,
+            step=step,
+        )
 
         self.bonded_, self.isolated_ = [], []
-
-        self.ppm = ppm
 
     def _isolated_or_bonded(self):
         """Isolated/bonded `cluster_type` atoms per snapshot."""
@@ -114,7 +90,9 @@ class ChemicalShiftCenters(NearestNeighbors):
             self.cluster_group, self.cluster_group, box=self.u.dimensions
         )
         db = sklearn.cluster.DBSCAN(
-            eps=self.rcut_cluster, min_samples=2, metric="precomputed"
+            eps=CONFIG["chemical_shift"]["rcut_cluster"],
+            min_samples=2,
+            metric="precomputed",
         )
         db.fit(cluster_distances)
 
@@ -134,11 +112,13 @@ class ChemicalShiftCenters(NearestNeighbors):
         )
 
         for i, distances in enumerate(atom_to_cluster_dist):
-            first_coordination_shell = np.where(distances < self.rcut_atom)[0]
+            first_coordination_shell = np.where(
+                distances < CONFIG["chemical_shift"]["rcut_atom"]
+            )[0]
 
             self.contributions_[i] += np.mean(
                 [
-                    self.ppm[
+                    CONFIG["chemical_shift"]["contributions"][
                         "isolated" if labels[neighbor] == -1 else "bonded"
                     ]
                     for neighbor in first_coordination_shell

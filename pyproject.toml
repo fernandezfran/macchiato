@@ -34,6 +34,7 @@ dependencies = [
     "mdanalysis",
     "numpy",
     "pandas",
+    "pyyaml",
     "scikit-learn",
     "scipy",
     "importlib_metadata",

@@ -33,14 +33,7 @@ class TestChemicalShiftCenters:
         """Test the fit attributes of the ChemicalShiftCenters."""
         structure = request.getfixturevalue(structure)
 
-        csc = ChemicalShiftCenters(
-            structure["u"],
-            "Li",
-            "Si",
-            3.4,
-            3.0,
-            {"bonded": 18.0, "isolated": 6.0},
-        )
+        csc = ChemicalShiftCenters(structure["u"])
 
         csc.fit(None)
 
@@ -53,14 +46,7 @@ class TestChemicalShiftCenters:
         """Test the fit_predict of the ChemicalShiftCenters."""
         structure = request.getfixturevalue(structure)
 
-        csc = ChemicalShiftCenters(
-            structure["u"],
-            "Li",
-            "Si",
-            3.4,
-            3.0,
-            {"bonded": 18.0, "isolated": 6.0},
-        )
+        csc = ChemicalShiftCenters(structure["u"])
 
         contributions = csc.fit_predict(None)
 

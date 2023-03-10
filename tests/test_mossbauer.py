@@ -33,9 +33,7 @@ class TestMossbauerEffect:
         """Test the fit_predict of the MossbauerEffect."""
         structure = request.getfixturevalue(structure)
 
-        csc = MossbauerEffect(
-            structure["u"], "Si", 3.4, {"mix": 1.2, "unmixed": 0.4}
-        )
+        csc = MossbauerEffect(structure["u"])
 
         contributions = csc.fit_predict(None)
 
