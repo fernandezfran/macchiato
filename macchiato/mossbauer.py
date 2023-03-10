@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""Mössbauer Effect Spectroscopy."""
+"""Predict Mössbauer Si spectra peaks splitting."""
 
 # ============================================================================
 # IMPORTS
@@ -30,7 +30,14 @@ from .config import CONFIG
 
 
 class MossbauerEffect(NearestNeighbors):
-    """Delta of a splitting in a two-contribution peak in Mossbauer Effect.
+    r"""Delta of a splitting in a two-contribution peak in Mössbauer spectra.
+
+    We define a :math:`z`-value as the minimum between Li and Si
+    concentrations in the first coordination shell of each Si atom, i.e.,
+    :math:`0 \leq z \leq 0.5`. The predicted value for the :math:`\Delta` of
+    each Si atom depends on this :math:`z`-value, if :math:`z \geq 0.3` then
+    :math:`\Delta = 1.2 mm/s` else :math:`\Delta = 0.4 mm/s`. This was inspired
+    by Li et al. work [2]_.
 
     Parameters
     ----------
@@ -49,8 +56,14 @@ class MossbauerEffect(NearestNeighbors):
     Attributes
     ----------
     contributions_ : numpy.ndarray
-        the mean of the Mössbauer effect delta between spectra peaks per
-        `atom_type` atom
+        the mean of the Mössbauer effect delta between spectra peaks per Si
+        atom
+
+    References
+    ----------
+    .. [2] Li, Jing, et al. "In situ 119Sn Mössbauer effect study of the
+        reaction of lithium with Si using a Sn probe." `Journal of The
+        Electrochemical Society` 156.4 (2009): A283.
     """
 
     def __init__(self, u, start=None, stop=None, step=None):
@@ -65,13 +78,13 @@ class MossbauerEffect(NearestNeighbors):
         self.all_atoms = u.select_atoms("all")
 
     def _contribution(self, lowest):
-        """Contribution of each `atom_type` atom given the lowest value."""
+        """Contribution of each Si atom given the lowest value."""
         return CONFIG["mossbauer"]["contributions"][
             "mix" if lowest >= CONFIG["mossbauer"]["threshold"] else "unmixed"
         ]
 
     def _mean_contribution(self):
-        """Mean contribution per atom to the delta between peaks."""
+        """Mean contribution per Si atom to the delta between peaks."""
         all_distances = mda.lib.distances.distance_array(
             self.atom_group, self.all_atoms, box=self.u.dimensions
         )
@@ -112,7 +125,10 @@ class MossbauerEffect(NearestNeighbors):
         return super().fit(X, y, sample_weight)
 
     def fit_predict(self, X, y=None, sample_weight=None):
-        """Compute the clustering and predict the delta splitting.
+        r"""Compute the clustering and predict the delta splitting.
+
+        To obtain each :math:`\Delta` an average is perfomed in the trajectory
+        of the Si atom.
 
         Parameters
         ----------
@@ -126,7 +142,7 @@ class MossbauerEffect(NearestNeighbors):
         Returns
         -------
         contributions_ : numpy.ndarray
-            the mean of the Mössbauer effect delta between spectra peaks per
-            `atom_type` atom
+            the mean of the Mössbauer effect delta between spectra peaks per Si
+            atom
         """
         return super().fit_predict(X, y, sample_weight)

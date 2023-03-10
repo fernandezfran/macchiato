@@ -11,8 +11,8 @@
 # DOCS
 # ============================================================================
 
-"""Estimate the peak centers of each atom and the overall width of the \
-chemical shift spectra."""
+"""Estimate the peak centers of each Li atom in a Si environment and the \
+overall width of the chemical shift spectra."""
 
 # ============================================================================
 # IMPORTS
@@ -38,7 +38,22 @@ from .utils import nmr_profile
 
 
 class ChemicalShiftCenters(NearestNeighbors):
-    """Obtain the peak centers of each atom `atom_type` in a trajectory.
+    r"""Obtain the peak centers of each Li atom.
+
+    The nearest-neighbor model consist of considering that each Li atom makes
+    a particular contribution to the total chemical shift spectra. The ansatz
+    chosen to locate the center of the peak was inspired by a comment from
+    Ket et al. [1]_, who stated that if a Li atom is near a bonded Si, then
+    the center of its peak is at 18ppm, whereas if it is near an isolated Si
+    atom, the center should be at 6ppm. To take into account intermediate
+    contributions that appears in the spectra we define the peak position of
+    each Li atom as follow,
+
+    :math:`\delta_{Li} = \frac{1}{N_{Si}} \sum_{Si \in NN} \delta_{Key}`,
+
+    where the sum is considered over all first nearest-neighbors (NN) Si atoms
+    (:math:`N_{Si}`) and :math:`\delta_{Key}` is the shift value of 18ppm or
+    6ppm depending of the Si type.
 
     Parameters
     ----------
@@ -57,14 +72,19 @@ class ChemicalShiftCenters(NearestNeighbors):
     Attributes
     ----------
     bonded_ : float
-        the percentage of bonded cluters of `cluster_type` atoms
+        the percentage of bonded Si atoms
 
     isolated_ : float
-        the percentage of isolated `cluster_type` atoms
+        the percentage of isolated Si atoms
 
     contributions_ : numpy.ndarray
-        the mean of the peak in the chemical shift spectra per atom of the
-        `atom_type` type
+        the mean of the peak in the chemical shift spectra per Li atom
+
+    References
+    ----------
+    .. [1] Key, Baris, et al. "Real-time NMR investigations of structural
+        changes in silicon electrodes for lithium-ion batteries." `Journal of
+        the American Chemical Society` 131.26 (2009): 9239-9249.
     """
 
     def __init__(self, u, start=None, stop=None, step=None):
@@ -85,7 +105,7 @@ class ChemicalShiftCenters(NearestNeighbors):
         self.bonded_, self.isolated_ = [], []
 
     def _isolated_or_bonded(self):
-        """Isolated/bonded `cluster_type` atoms per snapshot."""
+        """Isolated/bonded Si atoms per snapshot."""
         cluster_distances = mda.lib.distances.distance_array(
             self.cluster_group, self.cluster_group, box=self.u.dimensions
         )
@@ -104,7 +124,7 @@ class ChemicalShiftCenters(NearestNeighbors):
         return db.labels_
 
     def _mean_contribution(self):
-        """Mean contribution per atom to the chemical shift spectra."""
+        """Mean contribution per Li atom to the chemical shift spectra."""
         labels = self._isolated_or_bonded()
 
         atom_to_cluster_dist = mda.lib.distances.distance_array(
@@ -150,7 +170,7 @@ class ChemicalShiftCenters(NearestNeighbors):
         return self
 
     def fit_predict(self, X, y=None, sample_weight=None):
-        """Compute the clustering and predict the chemical shift centers.
+        """Compute the clustering and predict the Li chemical shift centers.
 
         Parameters
         ----------
@@ -164,13 +184,16 @@ class ChemicalShiftCenters(NearestNeighbors):
         Returns
         -------
         contributions_ : numpy.ndarray
-            the chemical shift center per atom of the `atom_type` atoms
+            the mean of the peak in the chemical shift spectra per Li atom
         """
         return super().fit_predict(X, y, sample_weight)
 
 
 class ChemicalShiftWidth(RegressorMixin):
-    """Fit the overall widht of a chemical shift spectra given the centers.
+    """Fit the overall width of a Li chemical shift spectra given the centers.
+
+    A Voigt contribution is assumed for each center with the same width and
+    same heigth and the total intensity is a sum of them.
 
     Parameters
     ----------
@@ -183,9 +206,11 @@ class ChemicalShiftWidth(RegressorMixin):
     sigma_ : float
         the fitted standard deviation of the gaussian component of each voigt
         peak
+
     gamma_ : float
         the fitted half-width at half-maximum of the lorentzian component of
         each voigt peak
+
     heigth_ : float
         the fitted heigth of each voigt peak
     """
@@ -198,8 +223,10 @@ class ChemicalShiftWidth(RegressorMixin):
         )
 
     def fit(self, X, y):
-        """Fit the width of the nmr profile to the experimental data.
+        """Fit the width of the Li NMR profile to the experimental data.
 
+        Parameters
+        ----------
         X : array-like of shape (n_ppm, 1)
             chemical shift ppm points
 
@@ -209,7 +236,7 @@ class ChemicalShiftWidth(RegressorMixin):
         Returns
         -------
         self : object
-            fitted widths
+            fitted peaks
         """
         self._popt, _ = scipy.optimize.curve_fit(self._nmr_profile, X, y)
 
@@ -218,7 +245,7 @@ class ChemicalShiftWidth(RegressorMixin):
         return self
 
     def predict(self, X):
-        """Predict the chemical shift spectra.
+        """Predict the Li chemical shift spectra.
 
         Parameters
         ----------
@@ -252,7 +279,7 @@ class ChemicalShiftWidth(RegressorMixin):
 
 
 class ChemicalShiftSpectra:
-    """Plot the chemical shift spectra once you have the centers and width.
+    """Plot the Li chemical shift spectra once you have the centers and width.
 
     Parameters
     ----------
@@ -262,7 +289,7 @@ class ChemicalShiftSpectra:
 
     csw : macchiato.chemical_shift.ChemicalShiftWidth or numpy.ndarray
         a ChemicalShiftWidth object already fitted or numpy.ndarray with
-        sigma, gamma and heigth params of the voigt peak
+        sigma, gamma and heigth params of each voigt peak per Li atom
     """
 
     def __init__(self, csc, csw):
