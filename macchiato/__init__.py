@@ -11,7 +11,8 @@
 # DOCS
 # ============================================================================
 
-"""Data-driven nearest-neighbors models to predict physical measurements."""
+"""Data-driven nearest-neighbors models to predict physical measurements of \
+silicon-based lithium-ion battery anodes."""
 
 # ============================================================================
 # IMPORTS

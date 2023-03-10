@@ -2,7 +2,8 @@
 
 [![macchiatos CI](https://github.com/fernandezfran/macchiato/actions/workflows/CI.yml/badge.svg)](https://github.com/fernandezfran/macchiato/actions/workflows/CI.yml)
 
-Data-driven nearest-neighbors models to predict physical measurements.
+Data-driven nearest-neighbors models to predict physical measurements of 
+silicon-based lithium-ion battery anodes.
 
 In order to improve certain aspects of the materials, it is necessary to have 
 an in-depth understanding of the physics of the processes involved. In the 
