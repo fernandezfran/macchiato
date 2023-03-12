@@ -12,7 +12,7 @@ version = "0.0.1"
 authors = [{name = "Francisco Fernandez", email = "fernandezfrancisco2195@gmail.com"}]
 readme = "README.md"
 license = {file = "LICENSE"}
-description = "Data-driven nearest-neighbors models to predict physical measurements of silicon-based lithium-ion battery anodes."
+description = "Data-driven nearest-neighbors models to predict physical measurements in silicon-based lithium-ion battery anodes."
 keywords = [
     "data-driven-model",
     "nearest-neighbors",
