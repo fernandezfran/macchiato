@@ -12,6 +12,7 @@ macchiato
    :caption: Contents:
 
    install
+   tutorial.ipynb
    api
 
 
