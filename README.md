@@ -14,9 +14,15 @@ been elucidated. These models attempt to better interpret these peculiarities.
 
 ## Installation
 
-You can install the actual version of macchiato with
+You can install the most recent stable release of macchiato with 
 [pip](https://pip.pypa.io/en/latest/)
 
+```
+pip install macchiato
+```
+
+or you can install the development version directly from this
+[repo](https://github.com/fernandezfran/macchiato)
 ```
 pip install git+https://github.com/fernandezfran/macchiato
 ```
