@@ -12,6 +12,11 @@ contributions are always observed in different experiments that have not yet
 been elucidated. These models attempt to better interpret these peculiarities.
 
 
+## Requirements
+
+You need Python 3.8+ to run galpynostatic.
+
+
 ## Installation
 
 You can install the most recent stable release of macchiato with 
