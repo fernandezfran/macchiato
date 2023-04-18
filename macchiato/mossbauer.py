@@ -34,9 +34,8 @@ class MossbauerEffect(NearestNeighbors):
 
     We define a :math:`z`-value as the minimum between Li and Si
     concentrations in the first coordination shell of each Si atom, i.e.,
-    :math:`0 \leq z \leq 0.5`. The predicted value for the :math:`\Delta` of
-    each Si atom depends on this :math:`z`-value, if :math:`z \geq 0.3` then
-    :math:`\Delta = 1.2 mm/s` else :math:`\Delta = 0.4 mm/s`. This was inspired
+    :math:`0 \leq z \leq 0.5`. Then, there is a linear relationship between
+    :math:`\Delta` of each Si atom with its :math:`z`-value. This was inspired
     by Li et al. work [2]_.
 
     Parameters
@@ -77,9 +76,10 @@ class MossbauerEffect(NearestNeighbors):
 
     def _contribution(self, lowest):
         """Contribution of each Si atom given the lowest value."""
-        return self._cfg["contributions"][
-            "mix" if lowest >= self._cfg["threshold"] else "unmixed"
-        ]
+        return (
+            self._cfg["contributions"]["intercept"]
+            + self._cfg["contributions"]["slope"] * lowest
+        )
 
     def _mean_contribution(self):
         """Mean contribution per Si atom to the delta between peaks."""

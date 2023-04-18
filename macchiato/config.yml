@@ -13,6 +13,5 @@ mossbauer:
   atom_type: Si
   rcut: 3.4
   contributions:
-    mix: 1.2
-    unmixed: 0.4
-  threshold: 0.3
+    slope: 2.4
+    intercept: 0.15
