@@ -9,19 +9,28 @@ Module contents
 modules
 -------
 
-macchiato.chemical\_shift
--------------------------
+macchiato.experiments
+---------------------
 
-.. automodule:: macchiato.chemical_shift
+.. automodule:: macchiato.experiments
    :members:
    :undoc-members:
    :show-inheritance:
    :member-order: bysource
 
-macchiato.mossbauer
--------------------
+macchiato.experiments.chemical\_shift
+-------------------------------------
 
-.. automodule:: macchiato.mossbauer
+.. automodule:: macchiato.experiments.chemical_shift
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :member-order: bysource
+
+macchiato.experiments.mossbauer
+-------------------------------
+
+.. automodule:: macchiato.experiments.mossbauer
    :members:
    :undoc-members:
    :show-inheritance:

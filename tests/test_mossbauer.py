@@ -11,7 +11,7 @@
 # IMPORTS
 # ============================================================================
 
-from macchiato.mossbauer import MossbauerEffect
+from macchiato.experiments.mossbauer import MossbauerEffect
 
 import numpy as np
 

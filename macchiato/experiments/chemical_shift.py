@@ -27,10 +27,10 @@ import scipy.optimize
 import sklearn.cluster
 from sklearn.base import RegressorMixin
 
-from .base import NearestNeighbors
-from .config import CONFIG
-from .plot import SpectraPlotter
-from .utils import nmr_profile
+from ..base import NearestNeighbors
+from ..config import CONFIG
+from ..plot import SpectraPlotter
+from ..utils import nmr_profile
 
 # ============================================================================
 # CLASSES

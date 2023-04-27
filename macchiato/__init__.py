@@ -20,12 +20,12 @@ in silicon-based lithium-ion battery anodes."""
 
 import importlib_metadata
 
-from .chemical_shift import (
+from .experiments.chemical_shift import (
     ChemicalShiftCenters,
     ChemicalShiftSpectra,
     ChemicalShiftWidth,
 )
-from .mossbauer import MossbauerEffect
+from .experiments.mossbauer import MossbauerEffect
 
 # ============================================================================
 # CONSTANTS

@@ -21,8 +21,8 @@ import MDAnalysis as mda
 
 import numpy as np
 
-from .base import NearestNeighbors
-from .config import CONFIG
+from ..base import NearestNeighbors
+from ..config import CONFIG
 
 # ============================================================================
 # CLASSES
