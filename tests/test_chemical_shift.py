@@ -12,7 +12,8 @@
 # ============================================================================
 
 from macchiato.experiments.chemical_shift import (
-    ChemicalShiftCenters, ChemicalShiftWidth
+    ChemicalShiftCenters,
+    ChemicalShiftWidth,
 )
 
 import numpy as np

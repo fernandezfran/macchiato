@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""Data-driven nearest-neighbors models to predict physical measurements \
+"""Data-driven nearest-neighbors models to predict physical experiments \
 in silicon-based lithium-ion battery anodes."""
 
 # ============================================================================
@@ -20,6 +20,7 @@ in silicon-based lithium-ion battery anodes."""
 
 import importlib_metadata
 
+from . import experiments
 from .experiments.chemical_shift import (
     ChemicalShiftCenters,
     ChemicalShiftSpectra,
@@ -32,6 +33,7 @@ from .experiments.mossbauer import MossbauerEffect
 # ============================================================================
 
 __all__ = [
+    "experiments",
     "ChemicalShiftCenters",
     "ChemicalShiftWidth",
     "ChemicalShiftSpectra",

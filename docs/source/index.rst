@@ -7,7 +7,7 @@
 macchiato
 =========
 
-Data-driven nearest-neighbors models to predict physical measurements in
+Data-driven nearest-neighbors models to predict physical experiments in
 silicon-based lithium-ion battery anodes.
 
 In order to improve certain aspects of the materials, it is necessary to have 
