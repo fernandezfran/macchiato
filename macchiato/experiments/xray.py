@@ -74,13 +74,9 @@ class PairDistributionFunction(NearestNeighbors):
 
         self._cfg = CONFIG["pdf"]
 
-    def _objective(self, contributions, target, params):
+    def _objective(self, target, contributions, params):
         return sklearn.metrics.mean_squared_error(
-            target,
-            params[-1]
-            + np.sum(
-                [p * c for p, c in zip(params[:-1], contributions)], axis=0
-            ),
+            target, params[-1] + np.dot(np.array(params[:-1]), contributions)
         )
 
     def fit(self, X, y):
@@ -138,6 +134,8 @@ class PairDistributionFunction(NearestNeighbors):
 
             self.gofrs_.append(4 * np.pi * rho * r * (gofr - 1))
 
+        self.gofrs_ = np.asarray(self.gofrs_)
+
         # interpolate experimental data to the bins
         X = X.ravel()
         experiment = scipy.interpolate.interp1d(X, y)
@@ -151,20 +149,20 @@ class PairDistributionFunction(NearestNeighbors):
         r = r[mask]
         target = experiment(r)
 
-        contributions = [gofr[mask] for gofr in self.gofrs_]
+        contributions = np.asarray([gofr[mask] for gofr in self.gofrs_])
 
         # fit the weights of each alloy
         params0 = np.ones(len(contributions) + 1) / len(contributions)
         bounds = [(0, None)] * len(contributions) + [(None, None)]
         results = scipy.optimize.minimize(
-            lambda params: self._objective(contributions, target, params),
+            lambda params: self._objective(target, contributions, params),
             params0,
             method="L-BFGS-B",
             bounds=bounds,
         )
         params = results.x
 
-        self.weights_ = params[:-1]
+        self.weights_ = np.array(params[:-1])
         self.offset_ = params[-1]
 
     def predict(self, X):
@@ -180,9 +178,7 @@ class PairDistributionFunction(NearestNeighbors):
         y : array-like of shape (rvalues,)
             predicted intensity of the total PDF
         """
-        return self.offset_ + np.sum(
-            [w * gofr for w, gofr in zip(self.weights_, self.gofrs_)], axis=0
-        )
+        return self.offset_ + np.dot(self.weights_, self.gofrs_)
 
     @property
     def plot(self):
