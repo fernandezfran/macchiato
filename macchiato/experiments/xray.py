@@ -28,6 +28,7 @@ import scipy.optimize
 
 from ..base import NearestNeighbors
 from ..config import CONFIG
+from ..plot import PDFPlotter
 
 # ============================================================================
 # CLASSES
@@ -182,20 +183,7 @@ class PairDistributionFunction(NearestNeighbors):
             [w * gofr for w, gofr in zip(self.weights_, self.gofrs_)], axis=0
         )
 
-    def fit_predict(self, X, y):
-        """Fit and predict the X-ray PDF.
-
-        Parameters
-        ----------
-        X : array-like of shape (rvalues, 1)
-            r values
-
-        y : array-like of shape (rvalues,)
-            target intensity of the total PDF
-
-        Returns
-        -------
-        y : array-like of shape (rvalues,)
-            predicted intensity of the total PDF
-        """
-        return self.fit(X, y).predict(X)
+    @property
+    def plot(self):
+        """Plot accesor to :ref:`macchiato.plot` PDFPlotter."""
+        return PDFPlotter(self)

@@ -12,6 +12,7 @@
 # ============================================================================
 
 from macchiato.experiments.nmr import ChemicalShiftSpectra
+from macchiato.experiments.xray import PairDistributionFunction
 
 from matplotlib.testing.decorators import check_figures_equal
 
@@ -28,7 +29,7 @@ import pytest
     ("structure"),
     [("Li12Si7"), ("Li7Si3"), ("Li13Si4"), ("Li15Si4")],
 )
-class TestPlots:
+class TestSpectraPlotter:
     """Test the ChemicalShiftCenters fitting."""
 
     @check_figures_equal(extensions=["png", "pdf"], tol=0.02)
@@ -56,3 +57,27 @@ class TestPlots:
 
         ref_ax.set_xlim((structure["ppm"].max(), structure["ppm"].min()))
         ref_ax.set_xlabel(r"$\delta$ [ppm]")
+
+
+class TestPDFPlotter:
+    """Test the ChemicalShiftCenters fitting."""
+
+    @check_figures_equal(extensions=["png", "pdf"], tol=0.02)
+    def test_versus_data(self, fig_test, fig_ref, gofr):
+        pdf = PairDistributionFunction(gofr["universes"])
+        X, y = gofr["pdf"]["r"], gofr["pdf"]["gofr"]
+        pdf.fit(X, y)
+
+        # test plot
+        test_ax = fig_test.subplots()
+        pdf.plot.versus_data(X, y, ax=test_ax)
+
+        # ref plot
+        ref_ax = fig_ref.subplots()
+
+        ref_ax.scatter(X, y)
+        ref_ax.plot(pdf.rbins_, gofr["pred"])
+
+        ref_ax.set_xlim(X.min(), X.max())
+        ref_ax.set_xlabel(r"r [$\AA$]")
+        ref_ax.set_ylabel("G(r)")
