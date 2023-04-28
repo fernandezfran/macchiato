@@ -41,6 +41,5 @@ class TestPairDistributionFunction:
         pdf.fit(X, y)
 
         pred = pdf.predict(pdf.rbins_)
-        print(pred)
 
         np.testing.assert_array_almost_equal(pred, gofr["pred"])
