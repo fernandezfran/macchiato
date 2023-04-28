@@ -11,8 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""Estimate the peak centers of each Li atom in a Si environment and the \
-overall width of the chemical shift spectra."""
+"""Prediction of 7Li NMR chemical shift spectra."""
 
 # ============================================================================
 # IMPORTS

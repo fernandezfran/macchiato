@@ -11,7 +11,7 @@
 # IMPORTS
 # ============================================================================
 
-from macchiato.experiments.chemical_shift import (
+from macchiato.experiments.nmr import (
     ChemicalShiftCenters,
     ChemicalShiftWidth,
 )

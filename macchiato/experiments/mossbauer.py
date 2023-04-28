@@ -11,7 +11,7 @@
 # DOCS
 # ============================================================================
 
-"""Predict Mössbauer 119Sn (equiv. Si atoms) spectra peaks splitting."""
+"""Prediction Mössbauer 119Sn (equiv. Si atoms) spectra peaks splitting."""
 
 # ============================================================================
 # IMPORTS

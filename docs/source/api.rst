@@ -18,10 +18,10 @@ macchiato.experiments
    :show-inheritance:
    :member-order: bysource
 
-macchiato.experiments.chemical\_shift
--------------------------------------
+macchiato.experiments.nmr
+-------------------------
 
-.. automodule:: macchiato.experiments.chemical_shift
+.. automodule:: macchiato.experiments.nmr
    :members:
    :undoc-members:
    :show-inheritance:
@@ -31,6 +31,15 @@ macchiato.experiments.mossbauer
 -------------------------------
 
 .. automodule:: macchiato.experiments.mossbauer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :member-order: bysource
+
+macchiato.experiments.xray
+--------------------------
+
+.. automodule:: macchiato.experiments.xray
    :members:
    :undoc-members:
    :show-inheritance:

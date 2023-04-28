@@ -11,7 +11,7 @@
 # IMPORTS
 # ============================================================================
 
-from macchiato.experiments.chemical_shift import ChemicalShiftSpectra
+from macchiato.experiments.nmr import ChemicalShiftSpectra
 
 from matplotlib.testing.decorators import check_figures_equal
 
