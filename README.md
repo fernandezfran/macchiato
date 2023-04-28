@@ -14,7 +14,7 @@ been elucidated. These models attempt to better interpret these peculiarities.
 
 ## Requirements
 
-You need Python 3.8+ to run galpynostatic.
+You need Python 3.8+ to run macchiato.
 
 
 ## Installation
