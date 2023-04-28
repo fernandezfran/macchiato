@@ -134,24 +134,22 @@ class PairDistributionFunction(NearestNeighbors):
 
             self.gofrs_.append(4 * np.pi * rho * r * (gofr - 1))
 
+        self.rbins_ = r
         self.gofrs_ = np.asarray(self.gofrs_)
 
         # interpolate experimental data to the bins
         X = X.ravel()
         experiment = scipy.interpolate.interp1d(X, y)
 
-        self.rbins_ = r
-
+        # fit the weights of each alloy
         min_mask = r > X.min()
         max_mask = r <= self._cfg["rmax"]
         mask = min_mask & max_mask
 
         r = r[mask]
+        contributions = np.array([gofr[mask] for gofr in self.gofrs_])
+
         target = experiment(r)
-
-        contributions = np.asarray([gofr[mask] for gofr in self.gofrs_])
-
-        # fit the weights of each alloy
         params0 = np.ones(len(contributions) + 1) / len(contributions)
         bounds = [(0, None)] * len(contributions) + [(None, None)]
         results = scipy.optimize.minimize(
