@@ -26,6 +26,8 @@ import numpy as np
 import scipy.interpolate
 import scipy.optimize
 
+import sklearn.metrics
+
 from ..base import NearestNeighbors
 from ..config import CONFIG
 from ..plot import PDFPlotter
@@ -71,6 +73,15 @@ class PairDistributionFunction(NearestNeighbors):
         self.gofrs_ = []
 
         self._cfg = CONFIG["pdf"]
+
+    def _objective(self, contributions, target, params):
+        return sklearn.metrics.mean_squared_error(
+            target,
+            params[-1]
+            + np.sum(
+                [p * c for p, c in zip(params[:-1], contributions)], axis=0
+            ),
+        )
 
     def fit(self, X, y):
         """Fit the weights of each alloy.
@@ -143,23 +154,13 @@ class PairDistributionFunction(NearestNeighbors):
         contributions = [gofr[mask] for gofr in self.gofrs_]
 
         # fit the weights of each alloy
-        def objective_function(params):
-            return np.sum(
-                (
-                    np.sum(
-                        [p * c for p, c in zip(params[:-1], contributions)],
-                        axis=0,
-                    )
-                    + params[-1]
-                    - target
-                )
-                ** 2
-            )
-
         params0 = np.ones(len(contributions) + 1) / len(contributions)
         bounds = [(0, None)] * len(contributions) + [(None, None)]
         results = scipy.optimize.minimize(
-            objective_function, params0, method="L-BFGS-B", bounds=bounds
+            lambda params: self._objective(contributions, target, params),
+            params0,
+            method="L-BFGS-B",
+            bounds=bounds,
         )
         params = results.x
 

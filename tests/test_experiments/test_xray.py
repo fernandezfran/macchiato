@@ -42,4 +42,4 @@ class TestPairDistributionFunction:
 
         pred = pdf.predict(pdf.rbins_)
 
-        np.testing.assert_array_almost_equal(pred, gofr["pred"])
+        np.testing.assert_array_almost_equal(pred, gofr["pred"], decimal=5)
