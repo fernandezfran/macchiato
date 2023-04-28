@@ -15,3 +15,11 @@ mossbauer:
   contributions:
     slope: 2.4
     intercept: 0.15
+
+# X-ray PDF 
+pdf:
+  weights: [0.82, 0.16, 0.03]
+  atom_types: ["name Si", "name Li"]
+  nbins: 100
+  range: [0.0, 6.0]
+  rmax: 5.5

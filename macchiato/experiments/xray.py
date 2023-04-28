@@ -27,6 +27,7 @@ import scipy.interpolate
 import scipy.optimize
 
 from ..base import NearestNeighbors
+from ..config import CONFIG
 
 # ============================================================================
 # CLASSES
@@ -46,11 +47,6 @@ class PairDistributionFunction(NearestNeighbors):
     universes : list of MDAnalysis.core.universe.Universe
         a universe with the box defined per alloy to be considered
 
-    rdf_kws : dict, default=None
-        additional keyword arguments that are passed and are documented in
-        ``MDAnalysis.analysis.rdf.InterRDF``, defaults are 100 `nbins` in the
-        `range` [0.0, 6.0) Angstrom and the self `exclusion_block`.
-
     Attributes
     ----------
     weights_ : numpy.ndarray
@@ -59,21 +55,21 @@ class PairDistributionFunction(NearestNeighbors):
     offset_ : float
         y-axis offset
 
+    rbins_ : numpy.ndarray
+        rvalues corresponding to the gofr y-values
+
     gofrs_ : list of numpy.ndarray
         a list with the PDF of each alloy in the same order as the list of
         universes
     """
 
-    def __init__(self, universes, rdf_kws=None):
+    def __init__(self, universes):
         self.universes = universes
-
-        self.rdf_kws = {} if rdf_kws is None else rdf_kws
-        self.rdf_kws.setdefault("nbins", 100)
-        self.rdf_kws.setdefault("range", (0.0, 6.0))
-        self.rdf_kws.setdefault("exclusion_block", (1, 1))
 
         self.weights_, self.offset_ = None, None
         self.gofrs_ = []
+
+        self._cfg = CONFIG["pdf"]
 
     def fit(self, X, y):
         """Fit the weights of each alloy.
@@ -97,18 +93,24 @@ class PairDistributionFunction(NearestNeighbors):
                 weights = (1,)
                 interactions = (["all", "all"],)
             else:
-                weights = (0.82, 0.16, 0.03)
+                weights = self._cfg["weights"]
                 interactions = it.combinations_with_replacement(
-                    ("name Li", "name Si"), 2
+                    self._cfg["atom_types"], 2
                 )
 
-            gofr = np.zeros(self.rdf_kws["nbins"])
+            gofr = np.zeros(self._cfg["nbins"])
 
             for w, types in zip(weights, interactions):
                 central = u.select_atoms(types[0])
                 interact = u.select_atoms(types[1])
 
-                rdf = mda_rdf.InterRDF(central, interact, **self.rdf_kws)
+                rdf = mda_rdf.InterRDF(
+                    central,
+                    interact,
+                    nbins=self._cfg["nbins"],
+                    range=self._cfg["range"],
+                    exclusion_block=(1, 1),
+                )
                 rdf.run()
 
                 gofr += w * rdf.results.rdf
@@ -128,8 +130,10 @@ class PairDistributionFunction(NearestNeighbors):
         X = X.ravel()
         experiment = scipy.interpolate.interp1d(X, y)
 
+        self.rbins_ = r
+
         min_mask = r > X.min()
-        max_mask = r <= 5.5
+        max_mask = r <= self._cfg["rmax"]
         mask = min_mask & max_mask
 
         r = r[mask]
