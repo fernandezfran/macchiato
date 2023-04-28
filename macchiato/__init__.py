@@ -27,6 +27,7 @@ from .experiments.nmr import (
     ChemicalShiftSpectra,
     ChemicalShiftWidth,
 )
+from .experiments.xray import PairDistributionFunction
 
 # ============================================================================
 # CONSTANTS
@@ -34,10 +35,11 @@ from .experiments.nmr import (
 
 __all__ = [
     "experiments",
+    "MossbauerEffect",
     "ChemicalShiftCenters",
     "ChemicalShiftWidth",
     "ChemicalShiftSpectra",
-    "MossbauerEffect",
+    "PairDistributionFunction",
 ]
 
 NAME = "macchiato"
