@@ -40,8 +40,8 @@ class MossbauerEffect(NearestNeighbors):
 
     Parameters
     ----------
-    u : MDAnalysis.core.universe.Universe
-        a universe with the box defined
+    universe : MDAnalysis.core.universe.Universe
+        a MDAnalysis Universe with the box defined
 
     start : int, default=None
         start frame of analysis
@@ -65,14 +65,14 @@ class MossbauerEffect(NearestNeighbors):
         Electrochemical Society` 156.4 (2009): A283.
     """
 
-    def __init__(self, u, start=None, stop=None, step=None):
+    def __init__(self, universe, start=None, stop=None, step=None):
         self._cfg = CONFIG["mossbauer"]
 
         super().__init__(
-            u, self._cfg["atom_type"], start=start, stop=stop, step=step
+            universe, self._cfg["atom_type"], start=start, stop=stop, step=step
         )
 
-        self.all_atoms = u.select_atoms("all")
+        self.all_atoms = universe.select_atoms("all")
 
     def _contribution(self, lowest):
         """Contribution of each Si atom given the lowest value."""
@@ -84,21 +84,19 @@ class MossbauerEffect(NearestNeighbors):
     def _mean_contribution(self):
         """Mean contribution per Si atom to the delta between peaks."""
         all_distances = mda.lib.distances.distance_array(
-            self.atom_group, self.all_atoms, box=self.u.dimensions
+            self.atom_group, self.all_atoms, box=self.universe.dimensions
         )
 
         for i, distances in enumerate(all_distances):
-            first_coordination_shell = np.where(distances < self._cfg["rcut"])[
-                0
-            ]
+            nearest_neighbors = np.where(distances < self._cfg["rcut"])[0]
 
-            conc = np.mean(
+            local_mixture_degree = np.mean(
                 [
                     self.all_atoms[neighbor].name == self._cfg["atom_type"]
-                    for neighbor in first_coordination_shell
+                    for neighbor in nearest_neighbors
                 ]
             )
-            lowest = min(conc, 1 - conc)
+            lowest = min(local_mixture_degree, 1 - local_mixture_degree)
 
             self.contributions_[i] += self._contribution(lowest)
 

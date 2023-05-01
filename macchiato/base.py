@@ -31,8 +31,8 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
 
     Parameters
     ----------
-    u : MDAnalysis.core.universe.Universe
-        a universe with the box defined
+    universe : MDAnalysis.core.universe.Universe
+        a MDAnalysis Universe with the box defined
 
     atom_type : str or int
         type of atom on which to analyze the proximity to the clusters
@@ -52,14 +52,14 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         the contribution of the `atom_type` atoms
     """
 
-    def __init__(self, u, atom_type, start=None, stop=None, step=None):
-        self.u = u
+    def __init__(self, universe, atom_type, start=None, stop=None, step=None):
+        self.universe = universe
 
-        self.atom_group = u.select_atoms(f"name {atom_type}")
+        self.atom_group = universe.select_atoms(f"name {atom_type}")
         self._n_atoms_type = len(self.atom_group)
 
         self.start = 0 if start is None else start
-        self.stop = len(u.trajectory) if stop is None else stop
+        self.stop = len(universe.trajectory) if stop is None else stop
         self.step = 1 if step is None else step
 
         self.contributions_ = np.zeros(self._n_atoms_type)
@@ -85,7 +85,7 @@ class NearestNeighbors(ClusterMixin, BaseEstimator):
         self : object
             fitted model
         """
-        for i, ts in enumerate(self.u.trajectory):
+        for i, _ in enumerate(self.universe.trajectory):
             if i < self.start:
                 continue
 

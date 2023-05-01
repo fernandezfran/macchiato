@@ -56,8 +56,8 @@ class ChemicalShiftCenters(NearestNeighbors):
 
     Parameters
     ----------
-    u : MDAnalysis.core.universe.Universe
-        a universe with the box defined
+    universe : MDAnalysis.core.universe.Universe
+        a MDAnalysis Universe with the box defined
 
     start : int, default=None
         start frame of analysis
@@ -86,16 +86,16 @@ class ChemicalShiftCenters(NearestNeighbors):
         the American Chemical Society` 131.26 (2009): 9239-9249.
     """
 
-    def __init__(self, u, start=None, stop=None, step=None):
+    def __init__(self, universe, start=None, stop=None, step=None):
         self._cfg = CONFIG["chemical_shift"]
-        self.cluster_group = u.select_atoms(
+        self.cluster_group = universe.select_atoms(
             f"name {self._cfg['cluster_type']}"
         )
 
         self._n_cluster_type = len(self.cluster_group)
 
         super().__init__(
-            u, self._cfg["atom_type"], start=start, stop=stop, step=step
+            universe, self._cfg["atom_type"], start=start, stop=stop, step=step
         )
 
         self.bonded_, self.isolated_ = [], []
@@ -103,7 +103,9 @@ class ChemicalShiftCenters(NearestNeighbors):
     def _isolated_or_bonded(self):
         """Isolated/bonded Si atoms per snapshot."""
         cluster_distances = mda.lib.distances.distance_array(
-            self.cluster_group, self.cluster_group, box=self.u.dimensions
+            self.cluster_group,
+            self.cluster_group,
+            box=self.universe.dimensions,
         )
         db = sklearn.cluster.DBSCAN(
             eps=self._cfg["rcut_cluster"], min_samples=2, metric="precomputed"
@@ -122,20 +124,18 @@ class ChemicalShiftCenters(NearestNeighbors):
         labels = self._isolated_or_bonded()
 
         atom_to_cluster_dist = mda.lib.distances.distance_array(
-            self.atom_group, self.cluster_group, box=self.u.dimensions
+            self.atom_group, self.cluster_group, box=self.universe.dimensions
         )
 
         for i, distances in enumerate(atom_to_cluster_dist):
-            first_coordination_shell = np.where(
-                distances < self._cfg["rcut_atom"]
-            )[0]
+            nearest_neighbors = np.where(distances < self._cfg["rcut_atom"])[0]
 
             self.contributions_[i] += np.mean(
                 [
                     self._cfg["contributions"][
                         "isolated" if labels[neighbor] == -1 else "bonded"
                     ]
-                    for neighbor in first_coordination_shell
+                    for neighbor in nearest_neighbors
                 ]
             )
 

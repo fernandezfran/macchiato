@@ -28,7 +28,6 @@ import scipy.optimize
 
 import sklearn.metrics
 
-from ..base import NearestNeighbors
 from ..config import CONFIG
 from ..plot import PDFPlotter
 
@@ -37,13 +36,14 @@ from ..plot import PDFPlotter
 # ============================================================================
 
 
-class PairDistributionFunction(NearestNeighbors):
+class PairDistributionFunction:
     r"""X-ray Pair Distribution Function (PDF or :math:`G(r)`).
 
     PDF can be computed from Radial Distribution Function (RDF) by considering
-    the contribution of each interaccion (Si-Si, Si-Li, Si-Si). Then, a
-    measurement that has a mixture of alloys can be fitted to determine the
-    weight factor of each one to predict the experiment.
+    the contribution of each interaccion (Si-Si, Si-Li, Si-Si) given its
+    scattering factor. Then, a measurement that has a mixture of alloys can be
+    fitted to determine the weight factor of each one to predict the
+    experiment.
 
     Parameters
     ----------
@@ -74,7 +74,51 @@ class PairDistributionFunction(NearestNeighbors):
 
         self._cfg = CONFIG["pdf"]
 
+    def _calculate_gofrs(self):
+        """Calculate the gofr of each universe."""
+        for universe in self.universes:
+            if len(set(universe.atoms.types)) == 1:
+                scattering_factors = (1,)
+                interactions = (["all", "all"],)
+            else:
+                scattering_factors = self._cfg["scattering_factors"]
+                interactions = it.combinations_with_replacement(
+                    self._cfg["atom_types"], 2
+                )
+
+            gofr = np.zeros(self._cfg["nbins"])
+
+            for factor, types in zip(scattering_factors, interactions):
+                central = universe.select_atoms(types[0])
+                interact = universe.select_atoms(types[1])
+
+                rdf = mda_rdf.InterRDF(
+                    central,
+                    interact,
+                    nbins=self._cfg["nbins"],
+                    range=self._cfg["range"],
+                    exclusion_block=(1, 1),
+                )
+                rdf.run()
+
+                gofr += factor * rdf.results.rdf
+
+            rbins = rdf.results.bins
+
+            # volume of orthorhombic box
+            volume = np.mean(
+                [np.prod(universe.dimensions[:3]) for _ in universe.trajectory]
+            )
+            natoms = len(universe.atoms)
+            rho = natoms / volume
+
+            self.gofrs_.append(4 * np.pi * rho * rbins * (gofr - 1))
+
+        self.rbins_ = rbins
+        self.gofrs_ = np.asarray(self.gofrs_)
+
     def _objective(self, target, contributions, params):
+        """Objective function to minimize."""
         return sklearn.metrics.mean_squared_error(
             target, params[-1] + np.dot(np.array(params[:-1]), contributions)
         )
@@ -95,61 +139,21 @@ class PairDistributionFunction(NearestNeighbors):
         self : object
             fitted weights
         """
-        # first compute all the gofrs
-        for u in self.universes:
-            if len(set(u.atoms.types)) == 1:
-                weights = (1,)
-                interactions = (["all", "all"],)
-            else:
-                weights = self._cfg["weights"]
-                interactions = it.combinations_with_replacement(
-                    self._cfg["atom_types"], 2
-                )
-
-            gofr = np.zeros(self._cfg["nbins"])
-
-            for w, types in zip(weights, interactions):
-                central = u.select_atoms(types[0])
-                interact = u.select_atoms(types[1])
-
-                rdf = mda_rdf.InterRDF(
-                    central,
-                    interact,
-                    nbins=self._cfg["nbins"],
-                    range=self._cfg["range"],
-                    exclusion_block=(1, 1),
-                )
-                rdf.run()
-
-                gofr += w * rdf.results.rdf
-
-            r = rdf.results.bins
-
-            # volume of orthorhombic box
-            volume = np.mean(
-                [np.prod(u.dimensions[:3]) for ts in u.trajectory]
-            )
-            natoms = len(u.atoms)
-            rho = natoms / volume
-
-            self.gofrs_.append(4 * np.pi * rho * r * (gofr - 1))
-
-        self.rbins_ = r
-        self.gofrs_ = np.asarray(self.gofrs_)
+        self._calculate_gofrs()
 
         # interpolate experimental data to the bins
         X = X.ravel()
         experiment = scipy.interpolate.interp1d(X, y)
 
         # fit the weights of each alloy
-        min_mask = r > X.min()
-        max_mask = r <= self._cfg["rmax"]
+        min_mask = self.rbins_ > X.min()
+        max_mask = self.rbins_ <= self._cfg["rmax"]
         mask = min_mask & max_mask
 
-        r = r[mask]
+        rbins = self.rbins_[mask]
         contributions = np.array([gofr[mask] for gofr in self.gofrs_])
 
-        target = experiment(r)
+        target = experiment(rbins)
         params0 = np.ones(len(contributions) + 1) / len(contributions)
         bounds = [(0, None)] * len(contributions) + [(None, None)]
         results = scipy.optimize.minimize(
@@ -158,10 +162,9 @@ class PairDistributionFunction(NearestNeighbors):
             method="L-BFGS-B",
             bounds=bounds,
         )
-        params = results.x
 
-        self.weights_ = np.array(params[:-1])
-        self.offset_ = params[-1]
+        self.weights_ = np.array(results.x[:-1])
+        self.offset_ = results.x[-1]
 
     def predict(self, X):
         """Predict the X-ray PDF.

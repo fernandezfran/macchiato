@@ -25,9 +25,9 @@ class TestPairDistributionFunction:
 
     def test_fit(self, gofr):
         """Test the fit of the PairDistributionFunction."""
-        pdf = PairDistributionFunction(gofr["universes"])
-
         X, y = gofr["pdf"]["r"], gofr["pdf"]["gofr"]
+
+        pdf = PairDistributionFunction(gofr["universes"])
         pdf.fit(X, y)
 
         np.testing.assert_array_almost_equal(pdf.weights_, gofr["weights"])
@@ -35,9 +35,9 @@ class TestPairDistributionFunction:
 
     def test_predict(self, gofr):
         """Test the prediction of the PairDistributionFunction."""
-        pdf = PairDistributionFunction(gofr["universes"])
-
         X, y = gofr["pdf"]["r"], gofr["pdf"]["gofr"]
+
+        pdf = PairDistributionFunction(gofr["universes"])
         pdf.fit(X, y)
 
         pred = pdf.predict(pdf.rbins_)
