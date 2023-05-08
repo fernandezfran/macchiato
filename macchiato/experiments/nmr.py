@@ -68,6 +68,12 @@ class ChemicalShiftCenters(NearestNeighbors):
     step : int, default=None
         number of frames to skip between each analyzed one
 
+    References
+    ----------
+    .. [1] Key, Baris, et al. "Real-time NMR investigations of structural
+        changes in silicon electrodes for lithium-ion batteries." `Journal of
+        the American Chemical Society` 131.26 (2009): 9239-9249.
+
     Attributes
     ----------
     bonded_ : float
@@ -78,12 +84,6 @@ class ChemicalShiftCenters(NearestNeighbors):
 
     contributions_ : numpy.ndarray
         the mean of the peak in the chemical shift spectra per Li atom
-
-    References
-    ----------
-    .. [1] Key, Baris, et al. "Real-time NMR investigations of structural
-        changes in silicon electrodes for lithium-ion batteries." `Journal of
-        the American Chemical Society` 131.26 (2009): 9239-9249.
     """
 
     def __init__(self, universe, start=None, stop=None, step=None):

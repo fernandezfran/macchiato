@@ -52,17 +52,17 @@ class MossbauerEffect(NearestNeighbors):
     step : int, default=None
         number of frames to skip between each analyzed one
 
-    Attributes
-    ----------
-    contributions_ : numpy.ndarray
-        the mean of the Mössbauer effect delta between spectra peaks per Si
-        atom
-
     References
     ----------
     .. [2] Li, Jing, et al. "In situ 119Sn Mössbauer effect study of the
         reaction of lithium with Si using a Sn probe." `Journal of The
         Electrochemical Society` 156.4 (2009): A283.
+
+    Attributes
+    ----------
+    contributions_ : numpy.ndarray
+        the mean of the Mössbauer effect delta between spectra peaks per Si
+        atom
     """
 
     def __init__(self, universe, start=None, stop=None, step=None):
