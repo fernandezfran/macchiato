@@ -35,12 +35,19 @@ pip install git+https://github.com/fernandezfran/macchiato
 
 ## Citation
 
-> Autores. (Año). Título. _Revista_. DOI
+> F. Fernandez, M. Otero, M. B. Oviedo, D. E. Barraco, S. A. Paz, and E. P. M. Leiva.
+> (2023). Prediction of NMR, X-ray and M\"ossbauer experimental results for amorphous 
+> Li-Si alloys using a novel DFTB model. _preprint arXiv:2305.11006_.
 
 BibTeX entry:
 
 ```bibtex
-@article{
-    ...
+@misc{fernandez2023prediction,
+      title={Prediction of NMR, X-ray and M\"ossbauer experimental results for amorphous Li-Si alloys using a novel DFTB model},
+      author={Francisco Fernandez and Manuel Otero and Ma. Belén Oviedo and Daniel E. Barraco and S. Alexis Paz and Ezequiel P. M. Leiva},
+      year={2023},
+      eprint={2305.11006},
+      archivePrefix={arXiv},
+      primaryClass={cond-mat.mtrl-sci}
 }
 ```
