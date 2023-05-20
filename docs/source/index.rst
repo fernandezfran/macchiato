@@ -7,14 +7,32 @@
 macchiato
 =========
 
+.. image:: https://github.com/fernandezfran/macchiato/actions/workflows/CI.yml/badge.svg
+   :target: https://github.com/fernandezfran/macchiato/actions/workflows/CI.yml
+   :alt: macchiato CI
+
+.. image:: https://readthedocs.org/projects/macchiato/badge/?version=latest
+   :target: https://macchiato.readthedocs.io/
+   :alt: ReadTheDocs
+
+.. image:: https://img.shields.io/pypi/v/macchiato
+   :target: https://pypi.org/project/macchiato/
+   :alt: PyPI Version
+
+.. image:: https://img.shields.io/badge/python-3.8%2B-4584b6
+   :target: https://www.python.org/
+   :alt: python version
+
+.. image:: https://img.shields.io/badge/License-MIT-ffde57
+   :target: https://github.com/fernandezfran/macchiato/blob/main/LICENSE
+   :alt: mit license
+
+.. image:: https://img.shields.io/badge/arXiv-2305.11006-b31b1b
+   :target: https://arxiv.org/abs/2305.11006
+   :alt: arXiv
+
 Data-driven nearest-neighbors models to predict physical experiments in
 silicon-based lithium-ion battery anodes.
-
-In order to improve certain aspects of the materials, it is necessary to have 
-an in-depth understanding of the physics of the processes involved. In the 
-intrinsic behavior of silicon anodes for lithium-ion batteries, two 
-contributions are always observed in different experiments that have not yet 
-been elucidated. These models attempt to better interpret these peculiarities.
 
 
 Requirements
