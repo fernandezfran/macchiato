@@ -4,3 +4,4 @@ __pycache__/
 .coverage
 build/
 result_images/
+.ipynb_checkpoints/

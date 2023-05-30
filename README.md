@@ -27,6 +27,13 @@ python -m pip install -U macchiato
 ```
 
 
+## Usage
+
+The Jupyter Notebook pipelin in the 
+[paper folder](https://github.com/fernandezfran/macchiato/tree/main/paper) 
+is presented to reproduce the results of the published article.
+
+
 ## Citation
 
 > F. Fernandez, M. Otero, M. B. Oviedo, D. E. Barraco, S. A. Paz, and E. P. M. Leiva.
