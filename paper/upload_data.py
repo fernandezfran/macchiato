@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Upload the collected data for each experiment."""
+
 import os
 import pathlib
 
@@ -135,3 +136,61 @@ def for_crystalline_nmr():
     ]
 
     return x, universes, experimental_data
+
+
+def for_amorphous_nmr():
+    alloys = [
+        "Li13Si64",
+        "Li36Si64",
+        "Li57Si64",
+        "Li128Si64",
+        "Li210Si64",
+        "Li240Si64",
+    ]
+
+    x = np.array([13, 36, 57, 128, 210, 240]) / 64.0
+
+    universes = []
+    for alloy in alloys:
+        with open(PATH / f"md.{alloy}.out", "r") as md_out:
+            lines = md_out.readlines()
+
+        boxes = []
+        for i, line in enumerate(lines):
+            if "Lattice" in line:
+                lattice = [
+                    list(map(float, lines[i + j + 1].split()))
+                    for j in range(3)
+                ]
+                boxes.append(
+                    np.array(
+                        [
+                            lattice[0][0],
+                            lattice[1][1],
+                            lattice[2][2],
+                            90.0,
+                            90.0,
+                            90.0,
+                        ]
+                    )
+                )
+        boxes = np.array(boxes, dtype=object)
+
+        u = mda.Universe(str(PATH / f"{alloy}.xyz"))
+        for box, ts in zip(boxes, u.trajectory):
+            u.dimensions = box
+
+        universes.append(u)
+
+    experimental_data = [
+        pd.read_csv(str(PATH / f"{mv}mV.csv"), header=None)
+        for mv in ("105", "100", "095", "085", "050", "000")
+    ]
+
+    sei = pd.read_csv(str(PATH / "300mV.csv"), header=None)
+    sei = sei.iloc[:, 1].to_numpy()
+
+    masks = (37, 37, 39, 42, 45, 47)
+    bhs = (1.5, 1.2, 1.0, 1.0, 0.9, 0.7)
+
+    return x, universes, experimental_data, sei, masks, bhs
