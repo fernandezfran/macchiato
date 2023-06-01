@@ -29,7 +29,7 @@ python -m pip install -U macchiato
 
 ## Usage
 
-The Jupyter Notebook pipelin in the 
+The Jupyter Notebook pipeline in the 
 [paper folder](https://github.com/fernandezfran/macchiato/tree/main/paper) 
 is presented to reproduce the results of the published article.
 
