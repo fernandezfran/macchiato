@@ -129,6 +129,9 @@ def for_crystalline_nmr():
 
         universes.append(u)
 
-    experimental_data = [str(PATH / f"{alloy}.csv") for alloy in alloys]
+    experimental_data = [
+        pd.read_csv(str(PATH / f"{alloy}.csv"), header=None)
+        for alloy in alloys
+    ]
 
     return x, universes, experimental_data
