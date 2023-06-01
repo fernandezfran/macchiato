@@ -194,3 +194,58 @@ def for_amorphous_nmr():
     bhs = (1.5, 1.2, 1.0, 1.0, 0.9, 0.7)
 
     return x, universes, experimental_data, sei, masks, bhs
+
+
+def for_mossbauer():
+    alloys = [
+        "Li5Si64",
+        "Li13Si64",
+        "Li36Si64",
+        "Li57Si64",
+        "Li96Si64",
+        "Li128Si64",
+        "Li160Si64",
+        "Li210Si64",
+        "Li240Si64",
+    ]
+
+    x = np.array([5, 13, 36, 57, 96, 128, 160, 210, 240]) / 64.0
+
+    universes = []
+    for alloy in alloys:
+        with open(PATH / f"md.{alloy}.out", "r") as md_out:
+            lines = md_out.readlines()
+
+        boxes = []
+        for i, line in enumerate(lines):
+            if "Lattice" in line:
+                lattice = [
+                    list(map(float, lines[i + j + 1].split()))
+                    for j in range(3)
+                ]
+                boxes.append(
+                    np.array(
+                        [
+                            lattice[0][0],
+                            lattice[1][1],
+                            lattice[2][2],
+                            90.0,
+                            90.0,
+                            90.0,
+                        ]
+                    )
+                )
+        boxes = np.array(boxes, dtype=object)
+
+        u = mda.Universe(str(PATH / f"{alloy}.xyz"))
+        for box, ts in zip(boxes, u.trajectory):
+            u.dimensions = box
+
+        universes.append(u)
+
+    experimental_data = [
+        pd.read_csv(PATH / f"{process}.csv")
+        for process in ("lithiation-e", "lithiation-f")
+    ]
+
+    return x, universes, experimental_data
