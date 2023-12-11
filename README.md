@@ -7,8 +7,8 @@
 [![mit license](https://img.shields.io/badge/License-MIT-ffde57)](https://github.com/fernandezfran/macchiato/blob/main/LICENSE)
 [![arXiv](https://img.shields.io/badge/arXiv-2305.11006-b31b1b)](https://arxiv.org/abs/2305.11006)
 
-Data-driven nearest-neighbors models to predict physical experiments in
-silicon-based lithium-ion battery anodes.
+Data-driven nearest-neighbors models to predict measurement results in 
+silicon-based lithium-ion battery anodes
 
 
 ## Requirements
@@ -36,19 +36,21 @@ is presented to reproduce the results of the published article.
 
 ## Citation
 
-> F. Fernandez, M. Otero, M. B. Oviedo, D. E. Barraco, S. A. Paz, and E. P. M. Leiva.
-> (2023). Prediction of NMR, X-ray and Mössbauer experimental results for amorphous 
-> Li-Si alloys using a novel DFTB model. _preprint arXiv:2305.11006_.
+> Fernandez, F., Otero, M., Oviedo, M. B., Barraco, D. E., Paz, S. A., & Leiva, 
+> E. P. M. (2023). NMR, x-ray, and Mössbauer results for amorphous Li-Si alloys 
+> using density functional tight-binding method. Physical Review B, 108(14), 144201. 
 
 BibTeX entry:
 
 ```bibtex
-@misc{fernandez2023prediction,
-      title={Prediction of NMR, X-ray and Mössbauer experimental results for amorphous Li-Si alloys using a novel DFTB model},
-      author={Francisco Fernandez and Manuel Otero and Ma. Belén Oviedo and Daniel E. Barraco and S. Alexis Paz and Ezequiel P. M. Leiva},
-      year={2023},
-      eprint={2305.11006},
-      archivePrefix={arXiv},
-      primaryClass={cond-mat.mtrl-sci}
+@article{fernandez2023nmr,
+  title={NMR, x-ray, and M{\"o}ssbauer results for amorphous Li-Si alloys using density functional tight-binding method},
+  author={Fernandez, F and Otero, M and Oviedo, MB and Barraco, DE and Paz, SA and Leiva, EPM},
+  journal={Physical Review B},
+  volume={108},
+  number={14},
+  pages={144201},
+  year={2023},
+  publisher={APS}
 }
 ```
