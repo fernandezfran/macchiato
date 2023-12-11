@@ -5,7 +5,7 @@
 [![pypi version](https://img.shields.io/pypi/v/macchiato)](https://pypi.org/project/macchiato/)
 [![python version](https://img.shields.io/badge/python-3.8%2B-4584b6)](https://www.python.org/)
 [![mit license](https://img.shields.io/badge/License-MIT-ffde57)](https://github.com/fernandezfran/macchiato/blob/main/LICENSE)
-[![arXiv](https://img.shields.io/badge/arXiv-2305.11006-b31b1b)](https://arxiv.org/abs/2305.11006)
+[![PRB](https://img.shields.io/badge/PhysRevB-108.144201-b31033)](https://doi.org/10.1103/PhysRevB.108.144201)
 
 Data-driven nearest-neighbors models to predict measurement results in 
 silicon-based lithium-ion battery anodes
