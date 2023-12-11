@@ -48,7 +48,7 @@ class PairDistributionFunction:
     Parameters
     ----------
     universes : list of MDAnalysis.core.universe.Universe
-        a universe with the box defined per alloy to be considered
+        a list of universes with the box defined per alloy to be considered
 
     Attributes
     ----------
