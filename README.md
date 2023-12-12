@@ -7,9 +7,8 @@
 [![mit license](https://img.shields.io/badge/License-MIT-ffde57)](https://github.com/fernandezfran/macchiato/blob/main/LICENSE)
 [![PRB](https://img.shields.io/badge/PhysRevB-108.144201-b31033)](https://doi.org/10.1103/PhysRevB.108.144201)
 
-Data-driven nearest-neighbors models to predict measurement results in 
-silicon-based lithium-ion battery anodes
-
+Data-driven nearest neighbor models for predicting experimental results on 
+silicon lithium-ion battery anodes.
 
 ## Requirements
 

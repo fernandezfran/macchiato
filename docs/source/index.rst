@@ -31,8 +31,8 @@ macchiato
    :target: https://doi.org/10.1103/PhysRevB.108.144201
    :alt: PRB
 
-Data-driven nearest-neighbors models to predict measurement results in 
-silicon-based lithium-ion battery anodes
+Data-driven nearest neighbor models for predicting experimental results on 
+silicon lithium-ion battery anodes.
 
 
 Requirements
