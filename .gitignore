@@ -6,3 +6,4 @@ build/
 result_images/
 .ipynb_checkpoints/
 paper/.data/
+dist/

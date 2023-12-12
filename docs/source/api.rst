@@ -24,6 +24,7 @@ macchiato.experiments.nmr
 .. automodule:: macchiato.experiments.nmr
    :members:
    :undoc-members:
+   :exclude-members: set_fit_request
    :show-inheritance:
    :member-order: bysource
 
@@ -33,6 +34,7 @@ macchiato.experiments.mossbauer
 .. automodule:: macchiato.experiments.mossbauer
    :members:
    :undoc-members:
+   :exclude-members: set_fit_request
    :show-inheritance:
    :member-order: bysource
 
@@ -71,5 +73,6 @@ macchiato.base
 .. automodule:: macchiato.base
    :members:
    :undoc-members:
+   :exclude-members: set_fit_request
    :show-inheritance:
    :member-order: bysource
